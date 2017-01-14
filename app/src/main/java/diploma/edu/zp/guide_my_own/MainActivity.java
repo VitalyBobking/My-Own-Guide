@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        replaceContentView(new MapFragment(), R.string.map);
     }
 
     @Override
@@ -86,10 +88,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-
-
         if (id == R.id.nav_map) {
-            replaceContentView(new MapFragment(), R.string.app_name);
+            replaceContentView(new MapFragment(), R.string.map);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

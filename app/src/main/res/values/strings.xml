@@ -5,4 +5,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- Map -->
+    <string name="map">Map</string>
+    <string name="im_sure">I\'m sure</string>
+    <string name="retry">Retry</string>
+    <string name="exit_app">Exit App</string>
+    <string name="open">Open</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="permissions_denied_message">You need to allow "location access" before you can use the app. </string>
+
 </resources>
