@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "745079260524",
+    "project_id": "guide-my-own-1484389224195"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745079260524:android:502b41c2c3d1828e",
+        "android_client_info": {
+          "package_name": "diploma.edu.zp.guide_my_own"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745079260524-9aprevue8kf2qp1o61dflhkgg5i1upv6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "diploma.edu.zp.guide_my_own",
+            "certificate_hash": "056B9470A0CE37E20F8ABD5CE45DF91B64C42AE4"
+          }
+        },
+        {
+          "client_id": "745079260524-9t95b09ld74vll0gt4t78kij79jn66cn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkM-kJOMMpZKPtYGCHqJmrJaRIpOA3DvU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
