@@ -14,5 +14,5 @@
     <string name="open">Open</string>
     <string name="permission_denied">Permission Denied</string>
     <string name="permissions_denied_message">You need to allow "location access" before you can use the app. </string>
-
+    <string name="getting_your_location">Getting your location</string>
 </resources>

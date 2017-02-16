@@ -3,9 +3,12 @@ package diploma.edu.zp.guide_my_own.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,26 +17,38 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.service.LocationService;
+import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
 
 /**
  * Created by Val on 1/14/2017.
  */
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMapLongClickListener {
+    public static final String BROADCAST_ACTION = "dk.educaching.location_service";
+    public static final String SERVICE_LOCATION = "dk.educaching.SERVICE_LOCATION";
     private static final int REQUEST_LOCATION = 1503;
     private static final int REQUEST_LOCATION_CODE = 1;
     private MapView mapView;
     private GoogleMap mGoogleMap;
+    private KProgressHUD gettingLocationDialog;
 
     @Nullable
     @Override
@@ -48,20 +63,70 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+
+        MapsInitializer.initialize(this.getActivity());
+
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(),
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        googleMap.setMyLocationEnabled(true);
         mGoogleMap = googleMap;
 
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.getUiSettings().setMapToolbarEnabled(true);
+        gettingLocationDialog();
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mGoogleMap.setMyLocationEnabled(true);
-            } else {
-                requestSinglePermission();
-            }
-        } else {
-            mGoogleMap.setMyLocationEnabled(true);
+        Location loc = LocationService.getLastKnownLocation(getActivity());
+        if (loc != null)
+            startMap(loc);
+        else {
+            sendLocation();
         }
+
+        mGoogleMap.setOnMapLongClickListener(this);
+    }
+
+    private void startMap(Location loc) {
+        try {
+            if (getActivity() != null) {
+
+                if (gettingLocationDialog != null && gettingLocationDialog.isShowing())
+                    gettingLocationDialog.dismiss();
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendLocation() {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        SingleShotLocationProvider.requestSingleUpdate(getActivity(),
+                location -> {
+                    if (location != null) {
+                        Location targetLocation = new Location("");
+                        targetLocation.setLatitude(location.longitude);
+                        targetLocation.setLongitude(location.latitude);
+
+                        startMap(targetLocation);
+                    }
+                }, locationManager);
+    }
+
+    private void gettingLocationDialog() {
+        gettingLocationDialog = KProgressHUD.create(getContext())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel(getString(R.string.getting_your_location))
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0).show();
+
     }
 
     @Override
@@ -208,4 +273,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         break;
                 }
             };
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.e("location", String.valueOf(location.getLatitude()));
+
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setTitle("onMapLongClick")
+                .setMessage("Do you want to create?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.add(R.id.content_main, CreatePlace.newInstance(), CreatePlace.class.getName());
+                    transaction.commit();
+                })
+                .setNegativeButton(android.R.string.no, (dialog, which) -> {
+
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 }
