@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageView
+        app:layout_widthPercent="100%"
+        app:layout_heightPercent="50%"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:id="@+id/ivPicture" />
 
     <TextView
-        android:text="TextView"
-        android:layout_width="match_parent"
+        android:layout_below="@+id/ivPicture"
+        android:text="@string/take_a_picture"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView2" />
-</LinearLayout>
+        android:id="@+id/tvTakePicture" />
+
+</android.support.percent.PercentRelativeLayout>

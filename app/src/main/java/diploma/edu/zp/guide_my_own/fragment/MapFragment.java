@@ -288,13 +288,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
                 .setMessage("Do you want to create?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.add(R.id.content_main, CreatePlace.newInstance(), CreatePlace.class.getName());
+                    transaction.add(R.id.content_main, CreatePlaceFragment.newInstance(latLng), CreatePlaceFragment.class.getName());
                     transaction.commit();
-                })
-                .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                }).setNegativeButton(android.R.string.no, (dialog, which) -> {
 
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert);
+                }).setIcon(android.R.drawable.ic_dialog_alert);
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
