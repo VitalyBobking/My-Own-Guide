@@ -19,13 +19,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -34,14 +31,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import diploma.edu.zp.guide_my_own.R;
-import diploma.edu.zp.guide_my_own.service.LocationService;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
 
 /**
  * Created by Val on 1/14/2017.
  */
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleMap.OnMapLongClickListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, /*LocationListener,*/ GoogleMap.OnMapLongClickListener {
     public static final String BROADCAST_ACTION = "dk.educaching.location_service";
     public static final String SERVICE_LOCATION = "dk.educaching.SERVICE_LOCATION";
     private static final int REQUEST_LOCATION = 1503;
@@ -58,6 +54,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        //GuideMyOwn.startLocService();
+
         return view;
     }
 
@@ -68,15 +66,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
         MapsInitializer.initialize(this.getActivity());
 
-        if (ActivityCompat.checkSelfPermission(getActivity(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getActivity(),
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        googleMap.setMyLocationEnabled(true);
         mGoogleMap = googleMap;
+        /*setGoogleLocEnabled();
 
         gettingLocationDialog();
 
@@ -85,7 +76,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
             startMap(loc);
         else {
             sendLocation();
-        }
+        }*/
+        setGoogleLocEnabled();
+        //gettingLocationDialog();
+        sendLocation();
 
         mGoogleMap.setOnMapLongClickListener(this);
     }
@@ -96,8 +90,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
 
                 if (gettingLocationDialog != null && gettingLocationDialog.isShowing())
                     gettingLocationDialog.dismiss();
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,12 +266,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
                 }
             };
 
-    @Override
+    /*@Override
     public void onLocationChanged(Location location) {
         Log.e("location", String.valueOf(location.getLatitude()));
 
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
-    }
+    }*/
 
     @Override
     public void onMapLongClick(LatLng latLng) {

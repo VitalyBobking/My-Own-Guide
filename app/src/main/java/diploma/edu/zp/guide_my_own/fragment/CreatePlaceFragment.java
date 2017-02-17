@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,7 +20,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 
+import diploma.edu.zp.guide_my_own.DBHelper.FillDataBase;
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.DeleteFileByPath;
 
 /**
@@ -40,6 +43,7 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
     public final static int CAMERA_RQ = 6969;
     private String path;
     private ImageView ivPicture;
+    private Button btnSave;
     private LatLng latLng;
 
     @Nullable
@@ -58,6 +62,9 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
         tvTakePicture.setOnClickListener(this);
 
         ivPicture = (ImageView) v.findViewById(R.id.ivPicture);
+        btnSave = (Button) v.findViewById(R.id.btnSave);
+
+        btnSave.setOnClickListener(this);
 
         return v;
     }
@@ -94,7 +101,19 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
 
                 materialCamera.start(CAMERA_RQ);
             }
+        } else if (view.getId() == R.id.btnSave) {
+            FillDataBase.fill(getActivity(), makePlace());
         }
+    }
+
+    private Place makePlace() {
+        Place place = new Place();
+        place.setTitle("title");
+        place.setLatitude(latLng.latitude);
+        place.setLongitude(latLng.longitude);
+        place.setUrl_pic(path);
+
+        return place;
     }
 
     @Override

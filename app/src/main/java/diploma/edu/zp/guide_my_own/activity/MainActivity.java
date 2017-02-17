@@ -1,4 +1,4 @@
-package diploma.edu.zp.guide_my_own;
+package diploma.edu.zp.guide_my_own.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +16,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.fragment.CreatePlaceFragment;
 import diploma.edu.zp.guide_my_own.fragment.MapFragment;
+import diploma.edu.zp.guide_my_own.fragment.PlacesFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,13 +33,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -92,8 +88,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_map) {
             replaceContentView(new MapFragment(), R.string.map);
-        } else if (id == R.id.nav_gallery) {
-
+        } else if (id == R.id.nav_my_places) {
+            replaceContentView(new PlacesFragment(), R.string.my_places);
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
