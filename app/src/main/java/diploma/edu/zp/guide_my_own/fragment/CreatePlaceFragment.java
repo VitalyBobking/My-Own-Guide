@@ -3,6 +3,8 @@ package diploma.edu.zp.guide_my_own.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,9 @@ import com.afollestad.materialcamera.MaterialCamera;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import diploma.edu.zp.guide_my_own.DBHelper.FillDataBase;
 import diploma.edu.zp.guide_my_own.R;
@@ -112,6 +117,21 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
         place.setLatitude(latLng.latitude);
         place.setLongitude(latLng.longitude);
         place.setUrl_pic(path);
+
+        Geocoder gcd = new Geocoder(getActivity(), Locale.getDefault());
+        try {
+            List<Address> addresses = gcd.getFromLocation(latLng.latitude, latLng.longitude, 1);
+
+            if (addresses.size() > 0) {
+                if (addresses.get(0).getLocality() != null) {
+                    place.setCity(addresses.get(0).getLocality());
+                } else {
+                    place.setCity(addresses.get(0).getAdminArea());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return place;
     }

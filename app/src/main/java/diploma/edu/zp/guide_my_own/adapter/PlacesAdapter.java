@@ -36,7 +36,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Place place = places.get(position);
-        holder.tvTitle.setText(place.getTitle());
+        holder.tvCategory.setText(place.getCity());
 
         String path = place.getUrl_pic();
 
@@ -50,12 +50,12 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvTitle;
+        private TextView tvCategory;
         private ImageView ivPicture;
 
         MyViewHolder(View view) {
             super(view);
-            tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            tvCategory = (TextView) view.findViewById(R.id.tvCategory);
             ivPicture = (ImageView) view.findViewById(R.id.ivPicture);
         }
     }

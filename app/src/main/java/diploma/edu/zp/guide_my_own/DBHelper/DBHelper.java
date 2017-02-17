@@ -30,7 +30,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     FeedEntry.DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                     FeedEntry.URL_PIC + TEXT_TYPE + COMMA_SEP +
                     FeedEntry.LATITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    FeedEntry.LONGITUDE + DOUBLE_TYPE + COMMA_SEP + "" + TEXT_TYPE +" )";
+                    FeedEntry.LONGITUDE + DOUBLE_TYPE + COMMA_SEP +
+                    FeedEntry.CITY + "" + TEXT_TYPE +" )";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,5 +58,6 @@ public class DBHelper extends SQLiteOpenHelper {
         static final String URL_PIC = "url_pic";
         static final String LATITUDE = "lat";
         static final String LONGITUDE = "lon";
+        static final String CITY = "city";
     }
 }

@@ -69,6 +69,7 @@ public class PlacesFragment extends Fragment {
                     place.setUrl_pic(cursor.getString(PlaceScheme.URL_PIC.getIndex()));
                     place.setLatitude(cursor.getDouble(PlaceScheme.LATITUDE.getIndex()));
                     place.setLongitude(cursor.getDouble(PlaceScheme.LONGITUDE.getIndex()));
+                    place.setCity(cursor.getString(PlaceScheme.CITY.getIndex()));
 
                     places.add(place);
                 } while (cursor.moveToNext());

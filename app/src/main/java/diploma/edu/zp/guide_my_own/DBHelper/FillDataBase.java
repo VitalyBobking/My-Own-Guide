@@ -23,6 +23,7 @@ public class FillDataBase {
             values.put(DBHelper.FeedEntry.TITLE, place.getTitle());
             values.put(DBHelper.FeedEntry.DESCRIPTION, place.getDescription());
             values.put(DBHelper.FeedEntry.URL_PIC, place.getUrl_pic());
+            values.put(DBHelper.FeedEntry.CITY, place.getCity());
 
             db.insert(DBHelper.FeedEntry.TABLE_NAME, null, values);
 

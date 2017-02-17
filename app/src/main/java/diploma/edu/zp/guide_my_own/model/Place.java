@@ -13,6 +13,7 @@ public class Place implements Serializable {
     private String url_pic;
     private double latitude;
     private double longitude;
+    private String city;
 
     public int getId() {
         return id;
@@ -60,5 +61,13 @@ public class Place implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }
