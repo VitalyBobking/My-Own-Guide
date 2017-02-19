@@ -123,11 +123,15 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
             List<Address> addresses = gcd.getFromLocation(latLng.latitude, latLng.longitude, 1);
 
             if (addresses.size() > 0) {
+                String placeName = "";
                 if (addresses.get(0).getLocality() != null) {
-                    place.setCity(addresses.get(0).getLocality());
-                } else {
-                    place.setCity(addresses.get(0).getAdminArea());
+                    placeName += addresses.get(0).getLocality() + ", ";
                 }
+                placeName += addresses.get(0).getAdminArea();
+                placeName += ", " + addresses.get(0).getCountryName();
+                place.setPlaceName(placeName);
+            } else {
+                place.setPlaceName("Not defined");
             }
         } catch (IOException e) {
             e.printStackTrace();

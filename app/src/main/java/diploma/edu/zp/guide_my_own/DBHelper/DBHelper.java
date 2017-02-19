@@ -58,6 +58,6 @@ public class DBHelper extends SQLiteOpenHelper {
         static final String URL_PIC = "url_pic";
         static final String LATITUDE = "lat";
         static final String LONGITUDE = "lon";
-        static final String CITY = "city";
+        public static final String CITY = "city";
     }
 }

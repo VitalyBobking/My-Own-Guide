@@ -36,7 +36,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Place place = places.get(position);
-        holder.tvCategory.setText(place.getCity());
+        holder.tvCategory.setText(place.getPlaceName());
+        holder.tvCategory.setBackgroundColor(place.getColor());
 
         String path = place.getUrl_pic();
 

@@ -27,11 +27,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
+import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 
 /**
  * Created by Val on 1/14/2017.
@@ -45,6 +53,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
     private MapView mapView;
     private GoogleMap mGoogleMap;
     private KProgressHUD gettingLocationDialog;
+    private List<Place> places;
+    private List<Marker> markers;
 
     @Nullable
     @Override
@@ -54,9 +64,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        //GuideMyOwn.startLocService();
-
         return view;
+    }
+
+    private void addMarkers() {
+        if (markers == null) {
+            markers = new ArrayList<>();
+        }
+        for (Place p : places) {
+            markers.add(mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                    .title(p.getTitle())
+                    .snippet(p.getPlaceName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_24dp))));
+
+        }
     }
 
     @Override
@@ -65,8 +87,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
         googleMap.getUiSettings().setMapToolbarEnabled(false);
 
         MapsInitializer.initialize(this.getActivity());
-
         mGoogleMap = googleMap;
+        places = GetPlaces.getPlaces(getContext());
+        addMarkers();
         /*setGoogleLocEnabled();
 
         gettingLocationDialog();
@@ -90,6 +113,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
 
                 if (gettingLocationDialog != null && gettingLocationDialog.isShowing())
                     gettingLocationDialog.dismiss();
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();
