@@ -8,13 +8,16 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialcamera.MaterialCamera;
@@ -27,6 +30,7 @@ import java.util.Locale;
 
 import diploma.edu.zp.guide_my_own.DBHelper.FillDataBase;
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.DeleteFileByPath;
 
@@ -34,7 +38,7 @@ import diploma.edu.zp.guide_my_own.utils.DeleteFileByPath;
  * Created by Val on 2/16/2017.
  */
 
-public class CreatePlaceFragment extends Fragment implements View.OnClickListener {
+public class CreatePlaceFragment extends DialogToastFragment implements View.OnClickListener {
 
     public static CreatePlaceFragment newInstance(LatLng latLng) {
         CreatePlaceFragment fragment = new CreatePlaceFragment();
@@ -43,12 +47,14 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
         fragment.setArguments(args);
         return fragment;
     }
-
     public static final String COORDINATES = "COORDINATES";
+    public static final String CREATER_LISTENER = "CREATER_LISTENER";
     public final static int CAMERA_RQ = 6969;
     private String path;
     private ImageView ivPicture;
-    private Button btnSave;
+    private RelativeLayout rlPicture;
+    private TextView tvPlace;
+    private EditText etTitle;
     private LatLng latLng;
 
     @Nullable
@@ -58,25 +64,26 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
 
         latLng = getArguments().getParcelable(COORDINATES);
 
-        if (latLng != null) {
-            Log.e("latLng.latitude", String.valueOf(latLng.latitude));
-            Log.e("latLng.longitude", String.valueOf(latLng.longitude));
-        }
-
-        TextView tvTakePicture = (TextView) v.findViewById(R.id.tvTakePicture);
-        tvTakePicture.setOnClickListener(this);
+        Button btnTakePicture = (Button) v.findViewById(R.id.btnTakePicture);
+        btnTakePicture.setOnClickListener(this);
 
         ivPicture = (ImageView) v.findViewById(R.id.ivPicture);
-        btnSave = (Button) v.findViewById(R.id.btnSave);
+        rlPicture = (RelativeLayout) v.findViewById(R.id.rlPicture);
 
+        Button btnSave = (Button) v.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
+
+        etTitle = (EditText) v.findViewById(R.id.etTitle);
+        etTitle.setOnClickListener(this);
+
+        tvPlace = (TextView) v.findViewById(R.id.tvPlace);
 
         return v;
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.tvTakePicture) {
+        if (view.getId() == R.id.btnTakePicture) {
             File saveDir = null;
 
             final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
@@ -107,37 +114,67 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
                 materialCamera.start(CAMERA_RQ);
             }
         } else if (view.getId() == R.id.btnSave) {
-            FillDataBase.fill(getActivity(), makePlace());
+            if (etTitle.getText().toString().length() > 1) {
+                long res = FillDataBase.fill(getActivity(), makePlace());
+                if (res == -1) {
+                    showErrorDialog("Something went wrong");
+                } else {
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    Fragment fragment = fragmentManager.findFragmentByTag(getString(R.string.map));
+                    if (fragment instanceof MapFragment) {
+                        ((MapFragment) fragment).done();
+                    }
+                    getActivity().getSupportFragmentManager().popBackStack();
+
+                }
+            } else {
+                showErrorDialog("Please enter place name");
+            }
         }
     }
 
     private Place makePlace() {
         Place place = new Place();
-        place.setTitle("title");
+        place.setTitle(etTitle.getText().toString());
         place.setLatitude(latLng.latitude);
         place.setLongitude(latLng.longitude);
         place.setUrl_pic(path);
+        place.setPlaceName(getPlaceName());
 
+        return place;
+    }
+
+    private String getPlaceName() {
+        String placeName = "";
         Geocoder gcd = new Geocoder(getActivity(), Locale.getDefault());
         try {
             List<Address> addresses = gcd.getFromLocation(latLng.latitude, latLng.longitude, 1);
 
             if (addresses.size() > 0) {
-                String placeName = "";
-                if (addresses.get(0).getLocality() != null) {
-                    placeName += addresses.get(0).getLocality() + ", ";
+                Address address = addresses.get(0);
+
+                placeName += address.getAddressLine(2)!=null?address.getAddressLine(2)  + ", ":"";
+
+                String address0 = address.getAddressLine(0);
+                if (address0 != null) {
+                    boolean is_code = address0.matches("^-?\\d+$");
+                    if (!is_code)
+                        placeName += address0;
                 }
-                placeName += addresses.get(0).getAdminArea();
-                placeName += ", " + addresses.get(0).getCountryName();
-                place.setPlaceName(placeName);
+
+                String address1 = address.getAddressLine(1);
+                if (address1 != null) {
+                    boolean is_code = address1.matches("^-?\\d+$");
+                    if (!is_code)
+                        placeName += ", " + address1;
+                }
             } else {
-                place.setPlaceName("Not defined");
+                placeName = "Not defined";
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return place;
+        return placeName;
     }
 
     @Override
@@ -151,13 +188,6 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
 
             path = data.getData().getPath();
 
-            /*ExifInterface exif = null;
-            try {
-                exif = new ExifInterface(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
             BitmapFactory.Options bounds = new BitmapFactory.Options();
             bounds.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(path, bounds);
@@ -165,18 +195,9 @@ public class CreatePlaceFragment extends Fragment implements View.OnClickListene
             BitmapFactory.Options opts = new BitmapFactory.Options();
             Bitmap bm = BitmapFactory.decodeFile(path, opts);
 
-            /*if (exif != null) {
-                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                        ExifInterface.ORIENTATION_UNDEFINED);
-                bm = rotateBitmap(bm, orientation);
-            }*/
-
-            //Bitmap bmp2 = bm.copy(bm.getConfig(), true);
-
-            //bm = scaleBitmap(bm, width);
-
-            ivPicture.setVisibility(View.VISIBLE);
+            rlPicture.setVisibility(View.VISIBLE);
             ivPicture.setImageBitmap(bm);
+            tvPlace.setText(getPlaceName());
         }
     }
 }

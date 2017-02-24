@@ -8,16 +8,29 @@
         android:id="@+id/ivPicture"
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_below="@+id/ivPicture"
-        android:id="@+id/tvCategory"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add_icon"
+        android:layout_marginBottom="55dp"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:id="@+id/llInfo"
         android:layout_alignParentBottom="true"
-        android:gravity="center_horizontal"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:background="#22FFFFFF"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="55dp">
+        <TextView
+            android:id="@+id/tvCategory"
+            android:gravity="center_horizontal"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textStyle="bold"
+            android:text="fddfg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 </RelativeLayout>

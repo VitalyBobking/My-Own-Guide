@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
@@ -45,7 +46,7 @@ import diploma.edu.zp.guide_my_own.utils.GetPlaces;
  * Created by Val on 1/14/2017.
  */
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, /*LocationListener,*/ GoogleMap.OnMapLongClickListener {
+public class MapFragment extends DialogToastFragment implements OnMapReadyCallback, /*LocationListener,*/ GoogleMap.OnMapLongClickListener {
     public static final String BROADCAST_ACTION = "dk.educaching.location_service";
     public static final String SERVICE_LOCATION = "dk.educaching.SERVICE_LOCATION";
     private static final int REQUEST_LOCATION = 1503;
@@ -195,7 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
     public void requestSinglePermission() {
         String locationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
         int hasPermission = ContextCompat.checkSelfPermission(getActivity(), locationPermission);
-        String[] permissions = new String[] {locationPermission};
+        String[] permissions = new String[]{locationPermission};
 
         if (hasPermission != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(permissions, REQUEST_LOCATION);
@@ -215,7 +216,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
                             boolean showRationale = false;
 
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                                showRationale = shouldShowRequestPermissionRationale( permission );
+                                showRationale = shouldShowRequestPermissionRationale(permission);
                             }
 
                             if (!showRationale) {
@@ -248,7 +249,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
 
     private DialogInterface.OnClickListener dialogAppDetails =
             (dialog, which) -> {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         dialog.dismiss();
                         getActivity().finish();
@@ -278,7 +279,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
 
     private DialogInterface.OnClickListener dialogPermissionsDenied =
             (dialog, which) -> {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         dialog.dismiss();
                         getActivity().finish();
@@ -306,6 +307,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                     transaction.add(R.id.content_main, CreatePlaceFragment.newInstance(latLng), CreatePlaceFragment.class.getName());
+                    transaction.addToBackStack(null);
                     transaction.commit();
                 }).setNegativeButton(android.R.string.no, (dialog, which) -> {
 
@@ -313,5 +315,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, /*Locat
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void done() {
+        showSuccess("Place was added successful");
+        mGoogleMap.clear();
+        places = GetPlaces.getPlaces(getContext());
+        addMarkers();
     }
 }

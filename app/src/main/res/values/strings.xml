@@ -22,4 +22,12 @@
     <!-- MY PLACES -->
     <string name="my_places">My Places</string>
     <string name="no_places_defined">No places defined</string>
+    <string name="delete">Delete</string>
+
+    <!-- Create Place -->
+    <string name="name">Name</string>
+    <string name="done">Done</string>
+
+    <!--Dialogs-->
+    <string name="alert">Alert</string>
 </resources>

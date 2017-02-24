@@ -39,7 +39,6 @@ public class GetPlaces {
                     place.setLatitude(cursor.getDouble(PlaceScheme.LATITUDE.getIndex()));
                     place.setLongitude(cursor.getDouble(PlaceScheme.LONGITUDE.getIndex()));
                     place.setPlaceName(cursor.getString(PlaceScheme.CITY.getIndex()));
-                    place.setColor(getRandomColor());
 
                     places.add(place);
                 } while (cursor.moveToNext());
@@ -58,10 +57,5 @@ public class GetPlaces {
         }
 
         return places;
-    }
-
-    private static int getRandomColor() {
-        Random rnd = new Random();
-        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
     }
 }

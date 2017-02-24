@@ -14,7 +14,6 @@ public class Place implements Serializable {
     private double latitude;
     private double longitude;
     private String placeName;
-    private int color;
 
     public int getId() {
         return id;
@@ -70,13 +69,5 @@ public class Place implements Serializable {
 
     public void setPlaceName(String placeName) {
         this.placeName = placeName;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 }

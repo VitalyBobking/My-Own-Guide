@@ -11,10 +11,10 @@ import diploma.edu.zp.guide_my_own.model.Place;
  */
 
 public class FillDataBase {
-    public static void fill(Context context, Place place) {
+    public static long fill(Context context, Place place) {
         DBHelper dbHelper = null;
         SQLiteDatabase db = null;
-
+        long res = -1;
         try {
             dbHelper = new DBHelper(context);
             db = dbHelper.getWritableDatabase();
@@ -27,7 +27,7 @@ public class FillDataBase {
             values.put(DBHelper.FeedEntry.LATITUDE, place.getLatitude());
             values.put(DBHelper.FeedEntry.LONGITUDE, place.getLongitude());
 
-            db.insert(DBHelper.FeedEntry.TABLE_NAME, null, values);
+            res = db.insert(DBHelper.FeedEntry.TABLE_NAME, null, values);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,5 +39,6 @@ public class FillDataBase {
                 dbHelper.close();
             }
         }
+        return res;
     }
 }

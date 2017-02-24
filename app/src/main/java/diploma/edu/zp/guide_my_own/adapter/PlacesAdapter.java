@@ -3,6 +3,7 @@ package diploma.edu.zp.guide_my_own.adapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Place place = places.get(position);
         holder.tvCategory.setText(place.getPlaceName());
-        holder.tvCategory.setBackgroundColor(place.getColor());
 
         String path = place.getUrl_pic();
 
@@ -61,6 +61,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         }
     }
 
+    public void remove(int position) {
+        places.remove(position);
+        notifyItemRemoved(position);
+    }
+
     public PlacesAdapter(List<Place> places) {
         this.places = places;
     }
@@ -75,4 +80,6 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         }
         return b;
     }
+
+
 }
