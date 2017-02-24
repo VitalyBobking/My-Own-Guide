@@ -3,11 +3,9 @@ package diploma.edu.zp.guide_my_own.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import diploma.edu.zp.guide_my_own.DBHelper.DBHelper;
 import diploma.edu.zp.guide_my_own.DBHelper.PlaceScheme;
@@ -18,7 +16,7 @@ import diploma.edu.zp.guide_my_own.model.Place;
  */
 
 public class GetPlaces {
-    public static List<Place> getPlaces(Context context) {
+    public static List<Place> getPlaces(Context context, boolean is_group_by, String where) {
         DBHelper dbHelper = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -27,7 +25,13 @@ public class GetPlaces {
         try {
             dbHelper = new DBHelper(context);
             db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " GROUP BY " + DBHelper.FeedEntry.CITY, null);
+
+            if (where != null)
+                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " WHERE " + DBHelper.FeedEntry.COUNTRY + " = ?", new String[] {where}, null);
+            else if (is_group_by)
+                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " GROUP BY " + DBHelper.FeedEntry.COUNTRY, null);
+            else
+                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME, null);
 
             if (cursor.moveToFirst()) {
                 do {
@@ -38,7 +42,8 @@ public class GetPlaces {
                     place.setUrl_pic(cursor.getString(PlaceScheme.URL_PIC.getIndex()));
                     place.setLatitude(cursor.getDouble(PlaceScheme.LATITUDE.getIndex()));
                     place.setLongitude(cursor.getDouble(PlaceScheme.LONGITUDE.getIndex()));
-                    place.setPlaceName(cursor.getString(PlaceScheme.CITY.getIndex()));
+                    place.setPlaceName(cursor.getString(PlaceScheme.PLACE.getIndex()));
+                    place.setCountry(cursor.getString(PlaceScheme.COUNTRY.getIndex()));
 
                     places.add(place);
                 } while (cursor.moveToNext());

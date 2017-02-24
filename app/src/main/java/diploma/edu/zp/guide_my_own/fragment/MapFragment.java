@@ -16,7 +16,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -89,7 +88,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
         MapsInitializer.initialize(this.getActivity());
         mGoogleMap = googleMap;
-        places = GetPlaces.getPlaces(getContext());
+        places = GetPlaces.getPlaces(getContext(), false, null);
         addMarkers();
         /*setGoogleLocEnabled();
 
@@ -320,7 +319,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     public void done() {
         showSuccess("Place was added successful");
         mGoogleMap.clear();
-        places = GetPlaces.getPlaces(getContext());
+        places = GetPlaces.getPlaces(getContext(), false, null);
         addMarkers();
     }
 }

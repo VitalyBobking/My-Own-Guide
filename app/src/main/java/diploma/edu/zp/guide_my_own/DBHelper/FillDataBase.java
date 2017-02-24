@@ -23,9 +23,10 @@ public class FillDataBase {
             values.put(DBHelper.FeedEntry.TITLE, place.getTitle());
             values.put(DBHelper.FeedEntry.DESCRIPTION, place.getDescription());
             values.put(DBHelper.FeedEntry.URL_PIC, place.getUrl_pic());
-            values.put(DBHelper.FeedEntry.CITY, place.getPlaceName());
+            values.put(DBHelper.FeedEntry.PLACE, place.getPlaceName());
             values.put(DBHelper.FeedEntry.LATITUDE, place.getLatitude());
             values.put(DBHelper.FeedEntry.LONGITUDE, place.getLongitude());
+            values.put(DBHelper.FeedEntry.COUNTRY, place.getCountry());
 
             res = db.insert(DBHelper.FeedEntry.TABLE_NAME, null, values);
 

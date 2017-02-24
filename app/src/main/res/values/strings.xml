@@ -27,6 +27,7 @@
     <!-- Create Place -->
     <string name="name">Name</string>
     <string name="done">Done</string>
+    <string name="indefined">Indefined</string>
 
     <!--Dialogs-->
     <string name="alert">Alert</string>

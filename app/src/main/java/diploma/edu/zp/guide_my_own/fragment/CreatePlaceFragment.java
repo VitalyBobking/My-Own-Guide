@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -139,20 +140,24 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         place.setLatitude(latLng.latitude);
         place.setLongitude(latLng.longitude);
         place.setUrl_pic(path);
-        place.setPlaceName(getPlaceName());
+        List<String> pl = getPlaceName();
 
+        place.setPlaceName(pl.get(0));
+        place.setCountry(pl.get(1));
         return place;
     }
 
-    private String getPlaceName() {
+    private List<String> getPlaceName() {
         String placeName = "";
+        String country = "";
+        List<String> pl = new ArrayList<>();
         Geocoder gcd = new Geocoder(getActivity(), Locale.getDefault());
         try {
             List<Address> addresses = gcd.getFromLocation(latLng.latitude, latLng.longitude, 1);
 
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-
+                country = address.getCountryName();
                 placeName += address.getAddressLine(2)!=null?address.getAddressLine(2)  + ", ":"";
 
                 String address0 = address.getAddressLine(0);
@@ -174,7 +179,9 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return placeName;
+        pl.add(placeName);
+        pl.add(country);
+        return pl;
     }
 
     @Override
@@ -197,7 +204,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
 
             rlPicture.setVisibility(View.VISIBLE);
             ivPicture.setImageBitmap(bm);
-            tvPlace.setText(getPlaceName());
+            tvPlace.setText(getPlaceName().get(0));
         }
     }
 }

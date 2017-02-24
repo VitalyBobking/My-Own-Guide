@@ -1,40 +1,34 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import diploma.edu.zp.guide_my_own.DBHelper.DBHelper;
-import diploma.edu.zp.guide_my_own.DBHelper.PlaceScheme;
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.adapter.PlacesAdapter;
+import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
+import rx.Subscriber;
 
 /**
  * Created by Val on 2/17/2017.
  */
 
-public class PlacesFragment extends Fragment {
+public class PlacesFragment extends DialogToastFragment {
     public PlacesFragment() {
         setHasOptionsMenu(true);
     }
@@ -56,7 +50,7 @@ public class PlacesFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.recycler_view);
         TextView empty_view = (TextView) v.findViewById(R.id.empty_view);
 
-        List<Place> places = GetPlaces.getPlaces(getContext());
+        List<Place> places = GetPlaces.getPlaces(getContext(), true, null);
 
         initViews(recyclerView, places);
 
@@ -105,6 +99,25 @@ public class PlacesFragment extends Fragment {
         adapter = new PlacesAdapter(places);
         recyclerView.setAdapter(adapter);
 
+        adapter.getViewClickedObservable().subscribe(new Subscriber<View>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showErrorDialog(e.getMessage());
+            }
+
+            @Override
+            public void onNext(View view) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.content_main, CountryFragment.newInstance(String.valueOf(view.getTag())));
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);

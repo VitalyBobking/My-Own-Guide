@@ -14,6 +14,7 @@ public class Place implements Serializable {
     private double latitude;
     private double longitude;
     private String placeName;
+    private String country;
 
     public int getId() {
         return id;
@@ -69,5 +70,13 @@ public class Place implements Serializable {
 
     public void setPlaceName(String placeName) {
         this.placeName = placeName;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

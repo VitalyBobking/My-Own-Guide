@@ -22,10 +22,11 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 /**
- * Created by Val on 2/17/2017.
+ * Created by Val on 2/24/2017.
  */
 
-public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHolder> {
+public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.MyViewHolder> {
+
     private PublishSubject<View> mViewClickSubject = PublishSubject.create();
     public Observable<View> getViewClickedObservable() {
         return mViewClickSubject.asObservable();
@@ -42,15 +43,15 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
                 .map(aVoid -> itemView)
                 .subscribe(mViewClickSubject);
 
-        return new MyViewHolder(itemView);
+        return new CountryAdapter.MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Place place = places.get(position);
-        holder.tvCategory.setText(place.getCountry());
+        holder.tvCategory.setText(place.getPlaceName());
 
-        holder.itemView.setTag(place.getCountry());
+        holder.itemView.setTag(place);
 
         String path = place.getUrl_pic();
 
@@ -79,7 +80,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         notifyItemRemoved(position);
     }
 
-    public PlacesAdapter(List<Place> places) {
+    public CountryAdapter(List<Place> places) {
         this.places = places;
     }
 
