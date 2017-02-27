@@ -1,41 +1,30 @@
-package diploma.edu.zp.guide_my_own.utils;
+package diploma.edu.zp.guide_my_own.DBHelper;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import diploma.edu.zp.guide_my_own.DBHelper.DBHelper;
-import diploma.edu.zp.guide_my_own.DBHelper.PlaceScheme;
 import diploma.edu.zp.guide_my_own.model.Place;
 
 /**
- * Created by valera on 2/18/17.
+ * Created by Val on 2/27/2017.
  */
 
-public class GetPlaces {
-    public static List<Place> getPlaces(Context context, boolean is_group_by, String where) {
+public class DBGetPlaceByID {
+    public static Place getPlace(Context context, int id) {
         DBHelper dbHelper = null;
         SQLiteDatabase db = null;
         Cursor cursor = null;
-        List<Place> places = new ArrayList<>();
+        Place place = new Place();
 
         try {
             dbHelper = new DBHelper(context);
             db = dbHelper.getReadableDatabase();
 
-            if (where != null)
-                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " WHERE " + DBHelper.FeedEntry.COUNTRY + " = ?", new String[] {where}, null);
-            else if (is_group_by)
-                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " GROUP BY " + DBHelper.FeedEntry.COUNTRY, null);
-            else
-                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME, null);
+            cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " WHERE " + DBHelper.FeedEntry._ID + " = ?", new String[] {String.valueOf(id)}, null);
 
             if (cursor.moveToFirst()) {
                 do {
-                    Place place = new Place();
                     place.setId(cursor.getInt(PlaceScheme._ID.getIndex()));
                     place.setTitle(cursor.getString(PlaceScheme.TITLE.getIndex()));
                     place.setDescription(cursor.getString(PlaceScheme.DESCRIPTION.getIndex()));
@@ -45,7 +34,6 @@ public class GetPlaces {
                     place.setPlaceName(cursor.getString(PlaceScheme.PLACE.getIndex()));
                     place.setCountry(cursor.getString(PlaceScheme.COUNTRY.getIndex()));
 
-                    places.add(place);
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
@@ -61,6 +49,6 @@ public class GetPlaces {
                 dbHelper.close();
         }
 
-        return places;
+        return place;
     }
 }

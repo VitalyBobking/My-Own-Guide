@@ -1,4 +1,4 @@
-package diploma.edu.zp.guide_my_own.fragment;
+package diploma.edu.zp.guide_my_own.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -15,19 +15,16 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,19 +40,19 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import java.util.ArrayList;
 import java.util.List;
 
-import diploma.edu.zp.guide_my_own.DBHelper.DBGetPlaceByID;
 import diploma.edu.zp.guide_my_own.R;
-import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
+import diploma.edu.zp.guide_my_own.fragment.CreatePlaceFragment;
 import diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike;
+import diploma.edu.zp.guide_my_own.lib.MergedAppBarLayoutBehavior;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 
 /**
- * Created by Val on 1/14/2017.
+ * Created by Val on 2/27/2017.
  */
 
-public class MapFragment extends DialogToastFragment implements OnMapReadyCallback, /*LocationListener,*/ GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     public static final String BROADCAST_ACTION = "dk.educaching.location_service";
     public static final String SERVICE_LOCATION = "dk.educaching.SERVICE_LOCATION";
     private static final int REQUEST_LOCATION = 1503;
@@ -65,46 +62,46 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private KProgressHUD gettingLocationDialog;
     private List<Place> places;
     private List<Marker> markers;
-    private BottomSheetBehavior mBottomSheetBehavior;
-    private View bottomSheet;
 
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mapView = (MapView) view.findViewById(R.id.mapView);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_map);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(view2 -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
+        View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
 
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
-        bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
-
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        final BottomSheetBehaviorGoogleMapsLike behavior = BottomSheetBehaviorGoogleMapsLike.from(bottomSheet);
+        behavior.addBottomSheetCallback(new BottomSheetBehaviorGoogleMapsLike.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
-                        fab.setVisibility(View.VISIBLE);
                         Log.d("bottomsheet-", "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
                         Log.d("bottomsheet-", "STATE_DRAGGING");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
-                        fab.setVisibility(View.GONE);
                         Log.d("bottomsheet-", "STATE_EXPANDED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
-                        fab.setVisibility(View.GONE);
                         Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN:
-                        fab.setVisibility(View.VISIBLE);
                         Log.d("bottomsheet-", "STATE_HIDDEN");
                         break;
                     default:
@@ -114,28 +111,16 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             }
 
             @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
         });
-        mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
 
-        return view;
-    }
+        AppBarLayout mergedAppBarLayout = (AppBarLayout) findViewById(R.id.merged_appbarlayout);
+        MergedAppBarLayoutBehavior mergedAppBarLayoutBehavior = MergedAppBarLayoutBehavior.from(mergedAppBarLayout);
+        mergedAppBarLayoutBehavior.setToolbarTitle("Title Dummy");
 
-    private void addMarkers() {
-        if (markers == null) {
-            markers = new ArrayList<>();
-        }
-        for (Place p : places) {
-            Marker marker = mGoogleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                    .title(p.getTitle())
-                    .snippet(p.getPlaceName())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_24dp)));
-            marker.setTag(p.getId());
-            markers.add(marker);
-        }
-        mGoogleMap.setOnMarkerClickListener(this);
+        mergedAppBarLayoutBehavior.setNavigationOnClickListener(v -> behavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED));
+
+        behavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN);
     }
 
     @Override
@@ -143,59 +128,25 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
 
-        MapsInitializer.initialize(this.getActivity());
+        MapsInitializer.initialize(this);
         mGoogleMap = googleMap;
-        places = GetPlaces.getPlaces(getContext(), false, null);
+        places = GetPlaces.getPlaces(getApplicationContext(), false, null);
         addMarkers();
+
         setGoogleLocEnabled();
         sendLocation();
-
         mGoogleMap.setOnMapLongClickListener(this);
     }
 
-    private void startMap(Location loc) {
-        try {
-            if (getActivity() != null) {
-
-                if (gettingLocationDialog != null && gettingLocationDialog.isShowing())
-                    gettingLocationDialog.dismiss();
-
-                if (loc != null) {
-                    LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendLocation() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        SingleShotLocationProvider.requestSingleUpdate(getActivity(),
-                location -> {
-                    if (location != null) {
-                        Location targetLocation = new Location("");
-                        targetLocation.setLatitude(location.longitude);
-                        targetLocation.setLongitude(location.latitude);
-
-                        startMap(targetLocation);
-                    }
-                }, locationManager);
-    }
-
-    private void gettingLocationDialog() {
-        gettingLocationDialog = KProgressHUD.create(getContext())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel(getString(R.string.getting_your_location))
-                .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0).show();
-
-    }
-
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+        @Override
     public void onResume() {
         mapView.onResume();
         super.onResume();
@@ -228,9 +179,52 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         }
     }
 
+    private void addMarkers() {
+        if (markers == null) {
+            markers = new ArrayList<>();
+        }
+        for (Place p : places) {
+            markers.add(mGoogleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                    .title(p.getTitle())
+                    .snippet(p.getPlaceName())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_24dp))));
+
+        }
+    }
+
+    private void startMap(Location loc) {
+        try {
+            if (gettingLocationDialog != null && gettingLocationDialog.isShowing())
+                gettingLocationDialog.dismiss();
+
+            if (loc != null) {
+                LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        SingleShotLocationProvider.requestSingleUpdate(this,
+                location -> {
+                    if (location != null) {
+                        Location targetLocation = new Location("");
+                        targetLocation.setLatitude(location.longitude);
+                        targetLocation.setLongitude(location.latitude);
+
+                        startMap(targetLocation);
+                    }
+                }, locationManager);
+    }
+
     private void setGoogleLocEnabled() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mGoogleMap.setMyLocationEnabled(true);
                 sendLocation();
             } else {
@@ -245,7 +239,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     @TargetApi(Build.VERSION_CODES.M)
     public void requestSinglePermission() {
         String locationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
-        int hasPermission = ContextCompat.checkSelfPermission(getActivity(), locationPermission);
+        int hasPermission = ContextCompat.checkSelfPermission(this, locationPermission);
         String[] permissions = new String[]{locationPermission};
 
         if (hasPermission != PackageManager.PERMISSION_GRANTED) {
@@ -287,7 +281,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     private void startDialogOpenAppDetails(String title, String message) {
         try {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(title).setMessage(message)
                     .setPositiveButton(getString(R.string.exit_app), dialogAppDetails)
                     .setNegativeButton(getString(R.string.open), dialogAppDetails)
@@ -302,13 +296,13 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         dialog.dismiss();
-                        getActivity().finish();
+                        finish();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
                         dialog.dismiss();
                         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
                         intent.setData(uri);
                         startActivityForResult(intent, REQUEST_LOCATION_CODE);
                         break;
@@ -317,7 +311,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     private void startDialogPermissionsDenied(String title, String message) {
         try {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(title).setMessage(message)
                     .setPositiveButton(getString(R.string.im_sure), dialogPermissionsDenied)
                     .setNegativeButton(getString(R.string.retry), dialogPermissionsDenied)
@@ -332,7 +326,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         dialog.dismiss();
-                        getActivity().finish();
+                        finish();
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -351,11 +345,11 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setTitle("Create new place!")
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setTitle("Create new place")
                 .setMessage("Do you want to create?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                     transaction.add(R.id.content_main, CreatePlaceFragment.newInstance(latLng), CreatePlaceFragment.class.getName());
                     transaction.addToBackStack(null);
                     transaction.commit();
@@ -368,27 +362,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     }
 
     public void done() {
-        showSuccess("Place was added successful!");
         mGoogleMap.clear();
-        places = GetPlaces.getPlaces(getContext(), false, null);
+        places = GetPlaces.getPlaces(getApplicationContext(), false, null);
         addMarkers();
     }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        TextView tvTitle = (TextView) bottomSheet.findViewById(R.id.tvTitle);
-        ImageView ivClose = (ImageView) bottomSheet.findViewById(R.id.ivClose);
-
-        ivClose.setOnClickListener(view -> {
-            mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
-        });
-
-        Place p = DBGetPlaceByID.getPlace(getActivity(), Integer.valueOf(marker.getTag().toString()));
-        tvTitle.setText(p.getTitle());
-
-        mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED);
-        return false;
-    }
-
-
 }
