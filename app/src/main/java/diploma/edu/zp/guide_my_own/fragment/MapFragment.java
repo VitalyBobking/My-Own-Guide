@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -114,7 +115,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                 if (gettingLocationDialog != null && gettingLocationDialog.isShowing())
                     gettingLocationDialog.dismiss();
 
-
+                if (loc != null) {
+                    LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,11 +187,13 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mGoogleMap.setMyLocationEnabled(true);
+                sendLocation();
             } else {
                 requestSinglePermission();
             }
         } else {
             mGoogleMap.setMyLocationEnabled(true);
+            sendLocation();
         }
     }
 
