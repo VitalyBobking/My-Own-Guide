@@ -25,4 +25,8 @@ public class GuideMyOwn extends Application {
     public static void startLocService() {
         context.startService(locService);
     }
+
+    public static void stopLocService() {
+        context.stopService(locService);
+    }
 }

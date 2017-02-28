@@ -18,7 +18,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -44,11 +43,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import diploma.edu.zp.guide_my_own.DBHelper.DBGetPlaceByID;
+import diploma.edu.zp.guide_my_own.GuideMyOwn;
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike;
 import diploma.edu.zp.guide_my_own.model.Place;
+import diploma.edu.zp.guide_my_own.service.LocationService;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
+import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 
 /**
@@ -67,6 +69,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private List<Marker> markers;
     private BottomSheetBehavior mBottomSheetBehavior;
     private View bottomSheet;
+    private FloatingActionButton fab;
 
     @Nullable
     @Override
@@ -76,9 +79,16 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(view2 -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(view2 -> {
+            Location loc = LocationService.getLastKnownLocation(getContext());
+            if (loc != null) {
+                LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+                createPlace(latLng);
+            } else {
+                showErrorDialog("Please wait when your location will be gotten");
+            }
+        });
 
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
         bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
@@ -162,7 +172,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
                 if (loc != null) {
                     LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 6));
                 }
             }
         } catch (Exception e) {
@@ -199,12 +209,20 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     public void onResume() {
         mapView.onResume();
         super.onResume();
+
+        GuideMyOwn.startLocService();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        GuideMyOwn.stopLocService();
     }
 
     @Override
@@ -351,6 +369,17 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+        createPlace(latLng);
+    }
+
+    public void done() {
+        showSuccess("Place was added successful!");
+        mGoogleMap.clear();
+        places = GetPlaces.getPlaces(getContext(), false, null);
+        addMarkers();
+    }
+
+    private void createPlace(LatLng latLng) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle("Create new place!")
                 .setMessage("Do you want to create?")
@@ -367,28 +396,26 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         alertDialog.show();
     }
 
-    public void done() {
-        showSuccess("Place was added successful!");
-        mGoogleMap.clear();
-        places = GetPlaces.getPlaces(getContext(), false, null);
-        addMarkers();
-    }
-
     @Override
     public boolean onMarkerClick(Marker marker) {
-        TextView tvTitle = (TextView) bottomSheet.findViewById(R.id.tvTitle);
-        ImageView ivClose = (ImageView) bottomSheet.findViewById(R.id.ivClose);
+        fab.setVisibility(View.GONE);
 
-        ivClose.setOnClickListener(view -> {
-            mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
-        });
+        TextView tvTitle = (TextView) bottomSheet.findViewById(R.id.tvTitle);
+        TextView tvAddress = (TextView) bottomSheet.findViewById(R.id.tvAddress);
+        ImageView ivClose = (ImageView) bottomSheet.findViewById(R.id.ivClose);
+        ImageView ivPhoto = (ImageView) bottomSheet.findViewById(R.id.ivPhoto);
+
+        ivClose.setOnClickListener(view -> mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED));
 
         Place p = DBGetPlaceByID.getPlace(getActivity(), Integer.valueOf(marker.getTag().toString()));
         tvTitle.setText(p.getTitle());
+        tvAddress.setText(p.getPlaceName());
+
+        if (p.getUrl_pic() != null) {
+            ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(p.getUrl_pic()));
+        }
 
         mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED);
         return false;
     }
-
-
 }

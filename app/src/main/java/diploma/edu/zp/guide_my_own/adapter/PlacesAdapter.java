@@ -1,7 +1,5 @@
 package diploma.edu.zp.guide_my_own.adapter;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +9,11 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.model.Place;
+import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -55,7 +51,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         String path = place.getUrl_pic();
 
         if (path != null)
-            holder.ivPicture.setImageBitmap(loadImage(path));
+            holder.ivPicture.setImageBitmap(CreateBitmapFromPath.loadImage(path));
     }
 
     @Override
@@ -83,16 +79,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         this.places = places;
     }
 
-    private Bitmap loadImage(String path) {
-        Bitmap b = null;
-        try {
-            File f=new File(path);
-            b = BitmapFactory.decodeStream(new FileInputStream(f));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return b;
-    }
+
 
 
 }

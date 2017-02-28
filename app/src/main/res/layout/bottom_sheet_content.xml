@@ -10,24 +10,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@android:color/white">
-        <FrameLayout
+        <ImageView
+            android:id="@+id/ivClose"
+            android:src="@drawable/ic_close_white_24dp"
+            android:tint="#000000"
+            android:padding="16dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:src="@drawable/litupp_bg"
-                android:id="@+id/ivPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:layout_marginBottom="16dp"
-                android:scaleType="centerCrop" />
-            <ImageView
-                android:id="@+id/ivClose"
-                android:padding="16dp"
-                android:src="@drawable/ic_close_white_24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:src="@drawable/litupp_bg"
+            android:id="@+id/ivPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true" />
+
         <LinearLayout
             android:orientation="vertical"
             android:padding="16dp"

@@ -1,6 +1,7 @@
 package diploma.edu.zp.guide_my_own.service;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -20,6 +22,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.fragment.MapFragment;
 
 import static com.google.android.gms.location.LocationServices.FusedLocationApi;
@@ -55,7 +58,9 @@ public class LocationService extends Service implements
 
         try {
             if (!gps_enabled && !network_enabled) {
-
+                if (myAlertDialog == null) {
+                    showAlert(context);
+                }
             } else {
                 if (myAlertDialog != null)
                     myAlertDialog.dismiss();
@@ -149,6 +154,25 @@ public class LocationService extends Service implements
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    private synchronized static void showAlert(final Context context) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(context.getString(R.string.location_access_disabled))
+                .setPositiveButton(context.getString(R.string.open_settings), (paramDialogInterface, paramInt) -> {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    ((Activity)context).startActivityForResult(myIntent, 4);
+                    myAlertDialog = null;
+                })
+                .setNegativeButton(context.getString(R.string.cancel), (paramDialogInterface, paramInt) -> {
+                    if (myAlertDialog != null)
+                        myAlertDialog.dismiss();
+
+                    myAlertDialog = null;
+                });
+        dialog.setCancelable(false);
+        myAlertDialog = dialog.create();
+        dialog.show();
     }
 
     @Override

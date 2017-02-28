@@ -101,9 +101,7 @@ public class PlacesFragment extends DialogToastFragment {
 
         adapter.getViewClickedObservable().subscribe(new Subscriber<View>() {
             @Override
-            public void onCompleted() {
-
-            }
+            public void onCompleted() {}
 
             @Override
             public void onError(Throwable e) {
