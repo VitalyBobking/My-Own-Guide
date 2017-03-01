@@ -1,73 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:id="@+id/rlPicture"
-        android:visibility="gone"
-        android:layout_marginBottom="16dp"
-        app:layout_widthPercent="100%"
-        app:layout_heightPercent="50%">
-        <ImageView
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:scaleType="centerCrop"
-            android:layout_alignParentTop="true"
-            android:id="@+id/ivPicture"
-            android:layout_alignParentBottom="true" />
-        <TextView
-            android:id="@+id/tvPlace"
-            android:background="@drawable/round_background"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textColor="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"/>
-    </RelativeLayout>
-
-    <Button
-        android:layout_below="@+id/rlPicture"
-        android:id="@+id/btnTakePicture"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:background="@drawable/colored_ripple_button"
-        android:textSize="18sp"
-        android:fontFamily="sans-serif"
+    <android.support.percent.PercentRelativeLayout
+        android:orientation="vertical"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
-        android:text="@string/take_a_picture"
-        android:textColor="@drawable/text_selector"/>
+        android:layout_height="wrap_content">
 
-    <EditText android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/name"
-        android:theme="@style/MyEditText"
-        android:id="@+id/etTitle"
-        android:inputType="text"
-        android:maxLines="1"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/btnTakePicture"/>
+        <RelativeLayout
+            android:id="@+id/rlPicture"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp"
+            app:layout_widthPercent="100%"
+            app:layout_heightPercent="50%">
+            <ImageView
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                android:layout_alignParentTop="true"
+                android:id="@+id/ivPicture"
+                android:layout_alignParentBottom="true" />
+            <TextView
+                android:id="@+id/tvPlace"
+                android:background="@drawable/round_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textColor="@color/white"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
 
-    <Button
-        android:layout_below="@+id/etTitle"
-        android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:background="@drawable/colored_ripple_button"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/done"
-        android:textColor="@color/white"
-        android:textAllCaps="false"
-        android:textSize="18sp"/>
+        <Button
+            android:layout_below="@+id/rlPicture"
+            android:id="@+id/btnTakePicture"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:background="@drawable/colored_ripple_button"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="@string/take_a_picture"
+            android:textColor="@drawable/text_selector"/>
 
-</android.support.percent.PercentRelativeLayout>
+        <EditText android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name"
+            android:theme="@style/MyEditText"
+            android:id="@+id/etTitle"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/btnTakePicture"/>
+
+        <Button
+            android:layout_below="@+id/etTitle"
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:background="@drawable/colored_ripple_button"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/done"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:textSize="18sp"/>
+
+    </android.support.percent.PercentRelativeLayout>
+</ScrollView>

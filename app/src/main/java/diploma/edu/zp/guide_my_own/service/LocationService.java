@@ -44,6 +44,9 @@ public class LocationService extends Service implements
         boolean gps_enabled = false;
         boolean network_enabled = false;
 
+        if (locationManager == null)
+            return null;
+
         try {
             gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {

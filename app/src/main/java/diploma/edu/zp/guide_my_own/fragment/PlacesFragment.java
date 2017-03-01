@@ -1,8 +1,8 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.activity.CountryActivity;
 import diploma.edu.zp.guide_my_own.adapter.PlacesAdapter;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
@@ -110,10 +111,13 @@ public class PlacesFragment extends DialogToastFragment {
 
             @Override
             public void onNext(View view) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                Intent intent = new Intent(getActivity(), CountryActivity.class);
+                intent.putExtra(CountryFragment.EXTRA_COUNTRY, String.valueOf(view.getTag()));
+                startActivity(intent);
+                /*FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.add(R.id.content_main, CountryFragment.newInstance(String.valueOf(view.getTag())));
                 transaction.addToBackStack(null);
-                transaction.commit();
+                transaction.commit();*/
             }
         });
 
@@ -125,7 +129,6 @@ public class PlacesFragment extends DialogToastFragment {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-            //Remove swiped item
             adapter.remove(viewHolder.getAdapterPosition());
         }
 

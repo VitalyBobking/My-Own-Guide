@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -49,7 +50,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         return fragment;
     }
     public static final String COORDINATES = "COORDINATES";
-    public static final String CREATER_LISTENER = "CREATER_LISTENER";
+    public static final String CURRENT_PATH = "CURRENT_PATH";
     public final static int CAMERA_RQ = 6969;
     private String path;
     private ImageView ivPicture;
@@ -57,6 +58,14 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     private TextView tvPlace;
     private EditText etTitle;
     private LatLng latLng;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            path = savedInstanceState.getString(CURRENT_PATH);
+        }
+    }
 
     @Nullable
     @Override
@@ -77,7 +86,18 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         etTitle = (EditText) v.findViewById(R.id.etTitle);
         etTitle.setOnClickListener(this);
 
+        etTitle.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                fillDB();
+            }
+            return false;
+        });
+
         tvPlace = (TextView) v.findViewById(R.id.tvPlace);
+
+        if (path != null) {
+            setImage();
+        }
 
         return v;
     }
@@ -115,22 +135,26 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
                 materialCamera.start(CAMERA_RQ);
             }
         } else if (view.getId() == R.id.btnSave) {
-            if (etTitle.getText().toString().length() > 1) {
-                long res = FillDataBase.fill(getActivity(), makePlace());
-                if (res == -1) {
-                    showErrorDialog("Something went wrong");
-                } else {
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    Fragment fragment = fragmentManager.findFragmentByTag(getString(R.string.map));
-                    if (fragment instanceof MapFragment) {
-                        ((MapFragment) fragment).done();
-                    }
-                    getActivity().getSupportFragmentManager().popBackStack();
+            fillDB();
+        }
+    }
 
-                }
+    private void fillDB() {
+        if (etTitle.getText().toString().length() > 1) {
+            long res = FillDataBase.fill(getActivity(), makePlace());
+            if (res == -1) {
+                showErrorDialog("Something went wrong");
             } else {
-                showErrorDialog("Please enter place name");
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment fragment = fragmentManager.findFragmentByTag(getString(R.string.map));
+                if (fragment instanceof MapFragment) {
+                    ((MapFragment) fragment).done();
+                }
+                getActivity().getSupportFragmentManager().popBackStack();
+
             }
+        } else {
+            showErrorDialog("Please enter place name");
         }
     }
 
@@ -185,6 +209,14 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (path != null) {
+            outState.putString(CURRENT_PATH, path);
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -194,17 +226,20 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
             }
 
             path = data.getData().getPath();
-
-            BitmapFactory.Options bounds = new BitmapFactory.Options();
-            bounds.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, bounds);
-
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            Bitmap bm = BitmapFactory.decodeFile(path, opts);
-
-            rlPicture.setVisibility(View.VISIBLE);
-            ivPicture.setImageBitmap(bm);
-            tvPlace.setText(getPlaceName().get(0));
+            setImage();
         }
+    }
+
+    private void setImage() {
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, bounds);
+
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        Bitmap bm = BitmapFactory.decodeFile(path, opts);
+
+        rlPicture.setVisibility(View.VISIBLE);
+        ivPicture.setImageBitmap(bm);
+        tvPlace.setText(getPlaceName().get(0));
     }
 }

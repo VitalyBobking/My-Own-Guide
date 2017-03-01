@@ -58,8 +58,10 @@ import diploma.edu.zp.guide_my_own.utils.GetPlaces;
  */
 
 public class MapFragment extends DialogToastFragment implements OnMapReadyCallback, /*LocationListener,*/ GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
-    public static final String BROADCAST_ACTION = "dk.educaching.location_service";
-    public static final String SERVICE_LOCATION = "dk.educaching.SERVICE_LOCATION";
+    public static final String BROADCAST_ACTION = "diploma.edu.zp.guide_my_own.location_service";
+    public static final String SERVICE_LOCATION = "diploma.edu.zp.guide_my_own.SERVICE_LOCATION";
+    public static final String CURRENT_PLACE = "CURRENT_PLACE";
+    public static final String CURRENT_ZOOM = "CURRENT_ZOOM";
     private static final int REQUEST_LOCATION = 1503;
     private static final int REQUEST_LOCATION_CODE = 1;
     private MapView mapView;
@@ -68,8 +70,24 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private List<Place> places;
     private List<Marker> markers;
     private BottomSheetBehavior mBottomSheetBehavior;
-    private View bottomSheet;
     private FloatingActionButton fab;
+    private Place mPlace;
+    private TextView tvTitle;
+    private TextView tvAddress;
+    private ImageView ivClose;
+    private ImageView ivPhoto;
+    private float currentZoom = 0;
+    private View bottomSheet;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mPlace = (Place) savedInstanceState.getSerializable(CURRENT_PLACE);
+            currentZoom = savedInstanceState.getFloat(CURRENT_ZOOM);
+        }
+    }
 
     @Nullable
     @Override
@@ -92,6 +110,15 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
         bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+
+        tvTitle = (TextView) bottomSheet.findViewById(R.id.tvTitle);
+        tvAddress = (TextView) bottomSheet.findViewById(R.id.tvAddress);
+        ivClose = (ImageView) bottomSheet.findViewById(R.id.ivClose);
+        ivPhoto = (ImageView) bottomSheet.findViewById(R.id.ivPhoto);
+
+        if (mPlace != null) {
+            fillBottomSheet(mPlace);
+        }
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -158,7 +185,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         places = GetPlaces.getPlaces(getContext(), false, null);
         addMarkers();
         setGoogleLocEnabled();
-        sendLocation();
+
+        Location loc = LocationService.getLastKnownLocation(getContext());
+        if (loc == null) sendLocation();
+        else startMap(loc);
 
         mGoogleMap.setOnMapLongClickListener(this);
     }
@@ -172,7 +202,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
                 if (loc != null) {
                     LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 6));
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, currentZoom == 0?6:currentZoom));
                 }
             }
         } catch (Exception e) {
@@ -360,12 +390,18 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                 }
             };
 
-    /*@Override
-    public void onLocationChanged(Location location) {
-        Log.e("location", String.valueOf(location.getLatitude()));
-
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
-    }*/
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        try {
+            if (mPlace != null) {
+                outState.putSerializable(CURRENT_PLACE, mPlace);
+                outState.putFloat(CURRENT_ZOOM, mGoogleMap.getCameraPosition().zoom);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
@@ -398,24 +434,32 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        fab.setVisibility(View.GONE);
+        mPlace = DBGetPlaceByID.getPlace(getActivity(), Integer.valueOf(marker.getTag().toString()));
 
-        TextView tvTitle = (TextView) bottomSheet.findViewById(R.id.tvTitle);
-        TextView tvAddress = (TextView) bottomSheet.findViewById(R.id.tvAddress);
-        ImageView ivClose = (ImageView) bottomSheet.findViewById(R.id.ivClose);
-        ImageView ivPhoto = (ImageView) bottomSheet.findViewById(R.id.ivPhoto);
-
-        ivClose.setOnClickListener(view -> mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED));
-
-        Place p = DBGetPlaceByID.getPlace(getActivity(), Integer.valueOf(marker.getTag().toString()));
-        tvTitle.setText(p.getTitle());
-        tvAddress.setText(p.getPlaceName());
-
-        if (p.getUrl_pic() != null) {
-            ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(p.getUrl_pic()));
-        }
-
+        fillBottomSheet(mPlace);
         mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED);
+
+        FloatingActionButton fab1 = (FloatingActionButton) bottomSheet.findViewById(R.id.fab1);
+        fab1.setOnClickListener(view -> {
+
+        });
         return false;
+    }
+
+    private void fillBottomSheet(Place place) {
+        try {
+            fab.setVisibility(View.GONE);
+            ivClose.setOnClickListener(view -> mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED));
+            tvTitle.setText(place.getTitle());
+            tvAddress.setText(place.getPlaceName());
+
+            ivPhoto.setImageBitmap(null);
+
+            if (place.getUrl_pic() != null) {
+                ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(place.getUrl_pic()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -38,6 +38,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.CountryActivity"/>
+
         <activity
             android:name=".activity.MapActivity" android:theme="@style/AppTheme.NoActionBar"/>
 
