@@ -48,10 +48,16 @@ import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike;
 import diploma.edu.zp.guide_my_own.model.Place;
+import diploma.edu.zp.guide_my_own.service.DownloadURL;
+import diploma.edu.zp.guide_my_own.service.GetDirectionsUrl;
 import diploma.edu.zp.guide_my_own.service.LocationService;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
 import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Val on 1/14/2017.
@@ -66,7 +72,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private static final int REQUEST_LOCATION_CODE = 1;
     private MapView mapView;
     private GoogleMap mGoogleMap;
-    private KProgressHUD gettingLocationDialog;
+    private KProgressHUD buildingPath;
     private List<Place> places;
     private List<Marker> markers;
     private BottomSheetBehavior mBottomSheetBehavior;
@@ -196,10 +202,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private void startMap(Location loc) {
         try {
             if (getActivity() != null) {
-
-                if (gettingLocationDialog != null && gettingLocationDialog.isShowing())
-                    gettingLocationDialog.dismiss();
-
                 if (loc != null) {
                     LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, currentZoom == 0?6:currentZoom));
@@ -223,16 +225,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                         startMap(targetLocation);
                     }
                 }, locationManager);
-    }
-
-    private void gettingLocationDialog() {
-        gettingLocationDialog = KProgressHUD.create(getContext())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel(getString(R.string.getting_your_location))
-                .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0).show();
-
     }
 
     @Override
@@ -441,9 +433,50 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
         FloatingActionButton fab1 = (FloatingActionButton) bottomSheet.findViewById(R.id.fab1);
         fab1.setOnClickListener(view -> {
+            mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+            if (buildingPath == null) {
+                buildingPath();
+            }
+            //buildingPath.show();
 
+            Location loc = LocationService.getLastKnownLocation(getActivity());
+            if (loc != null) {
+                LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+                String path = String.valueOf(GetDirectionsUrl.getDirectionsUrl(marker.getPosition(), latLng));
+                Log.e("------->", path);
+
+                Observable.just(DownloadURL.downloadUrl(path))
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {}
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e("onError ---->", String.valueOf(e.getMessage()));
+                            }
+
+                            @Override
+                            public void onNext(String s) {
+                                Log.e("onNext ---->", String.valueOf(s));
+                            }
+                        });
+            } else {
+                showErrorDialog("Can't get your location");
+            }
         });
         return false;
+    }
+
+    private void buildingPath() {
+        buildingPath = KProgressHUD.create(getContext())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel(getString(R.string.building_path))
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0);
+
     }
 
     private void fillBottomSheet(Place place) {
