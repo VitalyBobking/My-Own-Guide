@@ -48,7 +48,6 @@ import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike;
 import diploma.edu.zp.guide_my_own.model.Place;
-import diploma.edu.zp.guide_my_own.service.DownloadURL;
 import diploma.edu.zp.guide_my_own.service.GetDirectionsUrl;
 import diploma.edu.zp.guide_my_own.service.LocationService;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
@@ -445,10 +444,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                 String path = String.valueOf(GetDirectionsUrl.getDirectionsUrl(marker.getPosition(), latLng));
                 Log.e("------->", path);
 
-                Observable.just(DownloadURL.downloadUrl(path))
+                Observable.just(GuideMyOwn.getApi().getPath(String.valueOf((marker.getPosition().latitude + "," + marker.getPosition().longitude)), String.valueOf((latLng.latitude + "," + latLng.longitude)), false)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<String>() {
+                        .subscribe(new Subscriber<Object>() {
                             @Override
                             public void onCompleted() {}
 
@@ -458,10 +457,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                             }
 
                             @Override
-                            public void onNext(String s) {
+                            public void onNext(Object s) {
                                 Log.e("onNext ---->", String.valueOf(s));
                             }
-                        });
+                        }));
             } else {
                 showErrorDialog("Can't get your location");
             }

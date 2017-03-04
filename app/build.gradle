@@ -32,6 +32,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //noinspection GradleCompatible
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:design:25.2.0'
@@ -42,9 +43,12 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile 'com.jakewharton.rxbinding:rxbinding:1.0.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.okhttp3:okhttp:3.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.0'
 
-    compile 'com.google.android.gms:play-services-location:9.8.0'
-    compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.google.android.gms:play-services-location:10.2.0'
+    compile 'com.google.android.gms:play-services-maps:10.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
