@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,9 +39,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import diploma.edu.zp.guide_my_own.DBHelper.DBGetPlaceByID;
@@ -48,14 +55,16 @@ import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike;
 import diploma.edu.zp.guide_my_own.model.Place;
-import diploma.edu.zp.guide_my_own.service.GetDirectionsUrl;
 import diploma.edu.zp.guide_my_own.service.LocationService;
+import diploma.edu.zp.guide_my_own.service.PathJSONParser;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
 import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -83,6 +92,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private ImageView ivPhoto;
     private float currentZoom = 0;
     private View bottomSheet;
+    private Subscription mSubscription;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -248,6 +258,9 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     @Override
     public void onDestroy() {
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
         super.onDestroy();
         mapView.onDestroy();
     }
@@ -436,18 +449,22 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             if (buildingPath == null) {
                 buildingPath();
             }
-            //buildingPath.show();
 
             Location loc = LocationService.getLastKnownLocation(getActivity());
             if (loc != null) {
                 LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
-                String path = String.valueOf(GetDirectionsUrl.getDirectionsUrl(marker.getPosition(), latLng));
-                Log.e("------->", path);
 
-                Observable.just(GuideMyOwn.getApi().getPath(String.valueOf((marker.getPosition().latitude + "," + marker.getPosition().longitude)), String.valueOf((latLng.latitude + "," + latLng.longitude)), false)
+
+
+
+                mSubscription = GuideMyOwn.getApi().getPath(String.valueOf((marker.getPosition().latitude + "," +
+                        marker.getPosition().longitude)), String.valueOf((latLng.latitude + "," + latLng.longitude)), false)
+                        .map(this::convertObjToString)
+                        .map(this::parsePath)
+                        .map(this::createPolylinePoints)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Object>() {
+                        .subscribe(new Subscriber<PolylineOptions>() {
                             @Override
                             public void onCompleted() {}
 
@@ -457,15 +474,59 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                             }
 
                             @Override
-                            public void onNext(Object s) {
-                                Log.e("onNext ---->", String.valueOf(s));
+                            public void onNext(PolylineOptions options) {
+                                mGoogleMap.addPolyline(options);
                             }
-                        }));
+                        });
             } else {
                 showErrorDialog("Can't get your location");
             }
         });
         return false;
+    }
+
+    private PolylineOptions createPolylinePoints(List<List<HashMap<String, String>>> routes) {
+        ArrayList<LatLng> points = null;
+        PolylineOptions polyLineOptions = null;
+
+        for (int i = 0; i < routes.size(); i++) {
+            points = new ArrayList<>();
+            polyLineOptions = new PolylineOptions();
+            List<HashMap<String, String>> path = routes.get(i);
+
+            for (int j = 0; j < path.size(); j++) {
+                HashMap<String, String> point = path.get(j);
+
+                double lat = Double.parseDouble(point.get("lat"));
+                double lng = Double.parseDouble(point.get("lng"));
+                LatLng position = new LatLng(lat, lng);
+
+                points.add(position);
+            }
+
+            polyLineOptions.addAll(points);
+            polyLineOptions.width(4);
+            polyLineOptions.color(Color.BLUE);
+        }
+        return polyLineOptions;
+    }
+
+    private String convertObjToString(Object o) {
+        Gson gson = new Gson();
+        return gson.toJson(o);
+    }
+
+    private List<List<HashMap<String, String>>> parsePath(String s) {
+        JSONObject jObject;
+        List<List<HashMap<String, String>>> routes = null;
+        try {
+            jObject = new JSONObject(s);
+            PathJSONParser parser = new PathJSONParser();
+            routes = parser.parse(jObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return routes;
     }
 
     private void buildingPath() {
