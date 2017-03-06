@@ -1,6 +1,7 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,6 +35,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -103,6 +105,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private Subscription mSubscription;
     private Polyline mPolyline;
     private String mapType;
+    private View popupView;
+    private RelativeLayout rootLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -122,6 +126,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         mapView = (MapView) view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        rootLayout = (RelativeLayout) view.findViewById(R.id.rootLayout);
 
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(view2 -> {
@@ -160,11 +166,13 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
                         clearPolyline();
+                        removePopUp();
                         fab.setVisibility(View.GONE);
                         Log.d("bottomsheet-", "STATE_EXPANDED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
                         clearPolyline();
+                        removePopUp();
                         fab.setVisibility(View.GONE);
                         Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
                         break;
@@ -184,14 +192,9 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         });
         mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
 
-        return view;
-    }
+        createPopUpCachesWindow();
 
-    private void clearPolyline() {
-        if (mPolyline != null) {
-            mPolyline.remove();
-            mPolyline = null;
-        }
+        return view;
     }
 
     private void addMarkers() {
@@ -331,6 +334,67 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                     break;
             }
         }
+    }
+
+    @SuppressLint("InflateParams")
+    private void createPopUpCachesWindow() {
+        popupView = getActivity().getLayoutInflater().inflate(
+                R.layout.pop_up_marker, null, false);
+    }
+
+    private void showPopUpWindow(PolylineOptions options) {
+        removePopUp();
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout
+                .LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        List<LatLng> coords = options.getPoints();
+        double totalDistance = 0;
+        for (int i = 0; i + 1 < coords.size(); i++) {
+            totalDistance += calcDistance(coords.get(i), coords.get(i+1));
+        }
+
+        int distance;
+        String unit;
+        if (totalDistance > 1000) {
+            distance = (int) totalDistance / 1000;
+            unit = " km";
+        } else {
+            distance = (int) totalDistance * 10;
+            unit = " m";
+        }
+        ((TextView)popupView.findViewById(R.id.tvDistanceToCacheInfo)).setText(String.valueOf(distance + unit));
+        ((TextView)popupView.findViewById(R.id.tvTitle)).setText(mPlace.getTitle());
+
+        rootLayout.addView(popupView, layoutParams);
+
+        popupView.findViewById(R.id.ivDisposePopUp).setOnClickListener(view -> {
+            removePopUp();
+            clearPolyline();
+        });
+        fab.setVisibility(View.GONE);
+    }
+
+    private void clearPolyline() {
+        if (mPolyline != null) {
+            mPolyline.remove();
+            mPolyline = null;
+        }
+    }
+
+    private void removePopUp() {
+        if (popupView != null) {
+            fab.setVisibility(View.VISIBLE);
+            rootLayout.removeView(popupView);
+        }
+    }
+
+    private double calcDistance(LatLng a, LatLng b) {
+        float[] results = new float[1];
+        Location.distanceBetween(a.latitude, a.longitude, b.latitude, b.longitude, results);
+        return results[0];
     }
 
     @Override
@@ -569,7 +633,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
                             @Override
                             public void onNext(PolylineOptions options) {
-
+                                showPopUpWindow(options);
                                 mPolyline = mGoogleMap.addPolyline(options);
                                 moveCamera(options);
                             }

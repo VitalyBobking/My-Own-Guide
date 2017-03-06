@@ -51,9 +51,11 @@ public class DetailsFragment extends Fragment {
 
         ImageView ivPhoto = (ImageView) v.findViewById(R.id.ivPhoto);
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
+        TextView tvPlaceName = (TextView) v.findViewById(R.id.tvPlaceName);
 
         ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(mPlace.getUrl_pic()));
         tvTitle.setText(mPlace.getTitle());
+        tvPlaceName.setText(mPlace.getPlaceName());
 
         return v;
     }
