@@ -84,12 +84,6 @@ public class PlacesFragment extends DialogToastFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    /*@Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.places_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }*/
-
     private void initViews(RecyclerView recyclerView, List<Place> places){
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
@@ -114,10 +108,6 @@ public class PlacesFragment extends DialogToastFragment {
                 Intent intent = new Intent(getActivity(), CountryActivity.class);
                 intent.putExtra(CountryFragment.EXTRA_COUNTRY, String.valueOf(view.getTag()));
                 startActivity(intent);
-                /*FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.content_main, CountryFragment.newInstance(String.valueOf(view.getTag())));
-                transaction.addToBackStack(null);
-                transaction.commit();*/
             }
         });
 

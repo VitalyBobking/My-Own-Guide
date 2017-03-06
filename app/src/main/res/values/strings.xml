@@ -4,9 +4,15 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="map_type">Map Type</string>
 
     <!-- Map -->
+    <string name="choose_map_type">Choose Map Type</string>
+    <string name="map_normal">Normal</string>
+    <string name="map_hybrid">Hybrid</string>
+    <string name="map_satellite">Satellite</string>
+    <string name="map_terrain">Terrain</string>
+
     <string name="map">Map</string>
     <string name="im_sure">I\'m sure</string>
     <string name="retry">Retry</string>

@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioGroup"
+        android:padding="20dp">
+
+        <RadioButton
+            android:id="@+id/rbNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/map_dialog_divider"
+            android:text="@string/map_normal" />
+
+        <RadioButton
+            android:id="@+id/rbSatellite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/map_dialog_divider"
+            android:text="@string/map_satellite" />
+
+        <RadioButton
+            android:id="@+id/rbTerrain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/map_dialog_divider"
+            android:text="@string/map_terrain" />
+
+        <RadioButton
+            android:id="@+id/rbHybrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/map_dialog_divider"
+            android:text="@string/map_hybrid" />
+    </RadioGroup>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnDialogOk"
+        android:layout_below="@+id/radioGroup"
+        android:layout_centerInParent="true"
+        android:text="@string/cancel" />
+</RelativeLayout>

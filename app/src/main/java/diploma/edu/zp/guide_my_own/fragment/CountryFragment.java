@@ -3,6 +3,9 @@ package diploma.edu.zp.guide_my_own.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.activity.CountryActivity;
 import diploma.edu.zp.guide_my_own.adapter.CountryAdapter;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
@@ -25,6 +29,7 @@ import rx.Subscriber;
 
 public class CountryFragment extends Fragment {
     public static final String EXTRA_COUNTRY = "EXTRA_COUNTRY";
+    private String country;
 
     public static CountryFragment newInstance(String country) {
         Bundle bundle = new Bundle();
@@ -45,7 +50,7 @@ public class CountryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_country, container, false);
 
-        String country = getArguments().getString(EXTRA_COUNTRY);
+        country = getArguments().getString(EXTRA_COUNTRY);
 
         RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.recycler_view);
         TextView empty_view = (TextView) v.findViewById(R.id.empty_view);
@@ -65,10 +70,24 @@ public class CountryFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(CountryFragment.class.getName());
+        if (fragment.isVisible()) {
+            ActionBar actionBar = ((CountryActivity) getActivity()).getSupportActionBar();
+            if (country != null && actionBar != null) {
+                actionBar.setTitle(country);
+            }
+        }
+    }
+
     private void initViews(RecyclerView recyclerView, List<Place> places){
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         adapter = new CountryAdapter(places);
         recyclerView.setAdapter(adapter);
@@ -86,6 +105,11 @@ public class CountryFragment extends Fragment {
             @Override
             public void onNext(View view) {
                 Log.e("view ---->", String.valueOf(((Place)view.getTag()).getPlaceName()));
+
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.replace(R.id.country_main, DetailsFragment.newInstance((Place) view.getTag()));
+                transaction.commit();
             }
         });
     }

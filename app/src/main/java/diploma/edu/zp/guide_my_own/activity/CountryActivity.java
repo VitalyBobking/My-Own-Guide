@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import diploma.edu.zp.guide_my_own.R;
@@ -14,6 +15,7 @@ import diploma.edu.zp.guide_my_own.fragment.CountryFragment;
  */
 
 public class CountryActivity extends AppCompatActivity {
+    private static final String SAVED = "SAVED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,23 +32,33 @@ public class CountryActivity extends AppCompatActivity {
         }
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.country_main, CountryFragment.newInstance(country));
+        if (savedInstanceState == null) {
+            transaction.addToBackStack(null);
+        }
+        transaction.add(R.id.country_main, CountryFragment.newInstance(country), CountryFragment.class.getName());
         transaction.commit();
+
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED, true);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == android.R.id.home) {
-           finish();
-        }
 
+            Log.e("size ---->", String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                getSupportFragmentManager().popBackStack();
+            } else {
+                finish();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 }

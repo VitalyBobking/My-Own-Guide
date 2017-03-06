@@ -3,6 +3,7 @@ package diploma.edu.zp.guide_my_own.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,12 +25,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -37,8 +44,10 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -54,17 +63,16 @@ import diploma.edu.zp.guide_my_own.GuideMyOwn;
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike;
+import diploma.edu.zp.guide_my_own.model.MapTypes;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.service.LocationService;
 import diploma.edu.zp.guide_my_own.service.PathJSONParser;
 import diploma.edu.zp.guide_my_own.service.SingleShotLocationProvider;
 import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -93,10 +101,13 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private float currentZoom = 0;
     private View bottomSheet;
     private Subscription mSubscription;
+    private Polyline mPolyline;
+    private String mapType;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         if (savedInstanceState != null) {
             mPlace = (Place) savedInstanceState.getSerializable(CURRENT_PLACE);
@@ -148,10 +159,12 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                         Log.d("bottomsheet-", "STATE_DRAGGING");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
+                        clearPolyline();
                         fab.setVisibility(View.GONE);
                         Log.d("bottomsheet-", "STATE_EXPANDED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
+                        clearPolyline();
                         fab.setVisibility(View.GONE);
                         Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
                         break;
@@ -172,6 +185,13 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
 
         return view;
+    }
+
+    private void clearPolyline() {
+        if (mPolyline != null) {
+            mPolyline.remove();
+            mPolyline = null;
+        }
     }
 
     private void addMarkers() {
@@ -234,6 +254,83 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                         startMap(targetLocation);
                     }
                 }, locationManager);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.map_type:
+                chooseMapTypeDialog();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void chooseMapTypeDialog() {
+        Dialog dialogMapType = new Dialog(getActivity());
+        dialogMapType.setContentView(R.layout.map_dialog);
+        dialogMapType.setTitle(getString(R.string.choose_map_type));
+        dialogMapType.setCancelable(true);
+        getElementOfDialog(dialogMapType);
+    }
+
+    private void getElementOfDialog(final Dialog dialog) {
+        Button btnDialogOk = (Button) dialog.findViewById(R.id.btnDialogOk);
+
+        RadioButton rbNormal = (RadioButton) dialog.findViewById(R.id.rbNormal);
+        RadioButton rbHybrid = (RadioButton) dialog.findViewById(R.id.rbHybrid);
+        RadioButton rbSatellite = (RadioButton) dialog.findViewById(R.id.rbSatellite);
+        RadioButton rbTerrain = (RadioButton) dialog.findViewById(R.id.rbTerrain);
+
+        RadioButton[] radioButtons = new RadioButton[]{rbNormal, rbSatellite, rbTerrain, rbHybrid};
+
+        for (RadioButton rb : radioButtons) {
+            String textRB = rb.getText().toString();
+            if (textRB.equalsIgnoreCase(mapType)) {
+                rb.setChecked(true);
+            }
+        }
+
+        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton rbChecked = (RadioButton) dialog.findViewById(checkedId);
+            if (!rbChecked.getText().toString().equals(mapType)) {
+                mapType = rbChecked.getText().toString();
+                dialog.dismiss();
+                chooseMapType();
+            }
+        });
+
+        btnDialogOk.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void chooseMapType() {
+        if (mGoogleMap != null) {
+            switch (mapType) {
+                case MapTypes.NORMAL:
+                    mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    break;
+                case MapTypes.SATELLITE:
+                    mGoogleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    break;
+                case MapTypes.TERRAIN:
+                    mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                    break;
+                case MapTypes.HYBRID:
+                    mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                    break;
+            }
+        }
     }
 
     @Override
@@ -454,9 +551,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             if (loc != null) {
                 LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
 
-
-
-
                 mSubscription = GuideMyOwn.getApi().getPath(String.valueOf((marker.getPosition().latitude + "," +
                         marker.getPosition().longitude)), String.valueOf((latLng.latitude + "," + latLng.longitude)), false)
                         .map(this::convertObjToString)
@@ -475,7 +569,9 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
                             @Override
                             public void onNext(PolylineOptions options) {
-                                mGoogleMap.addPolyline(options);
+
+                                mPolyline = mGoogleMap.addPolyline(options);
+                                moveCamera(options);
                             }
                         });
             } else {
@@ -483,6 +579,18 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             }
         });
         return false;
+    }
+
+    private void moveCamera(PolylineOptions p) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for(int i = 0; i < p.getPoints().size();i++){
+            builder.include(p.getPoints().get(i));
+        }
+        LatLngBounds bounds = builder.build();
+        int padding = (int) getResources().getDimension(R.dimen.camera_padding);
+
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        mGoogleMap.moveCamera(cu);
     }
 
     private PolylineOptions createPolylinePoints(List<List<HashMap<String, String>>> routes) {
