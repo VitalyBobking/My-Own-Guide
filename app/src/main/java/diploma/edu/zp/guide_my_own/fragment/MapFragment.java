@@ -158,7 +158,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
-                        fab.setVisibility(View.VISIBLE);
+                        if (popupView == null)
+                            fab.setVisibility(View.VISIBLE);
                         Log.d("bottomsheet-", "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
@@ -607,9 +608,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         FloatingActionButton fab1 = (FloatingActionButton) bottomSheet.findViewById(R.id.fab1);
         fab1.setOnClickListener(view -> {
             mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
-            if (buildingPath == null) {
-                buildingPath();
-            }
 
             Location loc = LocationService.getLastKnownLocation(getActivity());
             if (loc != null) {
@@ -701,20 +699,13 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         return routes;
     }
 
-    private void buildingPath() {
-        buildingPath = KProgressHUD.create(getContext())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel(getString(R.string.building_path))
-                .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0);
-
-    }
-
     private void fillBottomSheet(Place place) {
         try {
             fab.setVisibility(View.GONE);
-            ivClose.setOnClickListener(view -> mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED));
+            ivClose.setOnClickListener(view -> {
+                removePopUp();
+                mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+            });
             tvTitle.setText(place.getTitle());
             tvAddress.setText(place.getPlaceName());
 
