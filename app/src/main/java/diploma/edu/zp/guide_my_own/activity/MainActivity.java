@@ -134,7 +134,8 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.content_main);
-        getSupportFragmentManager().putFragment(outState, CURRENT_FRAGMENT, fragment);
+        if (fragment != null)
+            getSupportFragmentManager().putFragment(outState, CURRENT_FRAGMENT, fragment);
     }
 
     @Override

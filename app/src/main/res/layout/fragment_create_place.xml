@@ -18,9 +18,9 @@
             app:layout_widthPercent="100%"
             app:layout_heightPercent="50%">
             <ImageView
-                android:layout_height="match_parent"
+                android:layout_height="300dp"
                 android:layout_width="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:layout_alignParentTop="true"
                 android:id="@+id/ivPicture"
                 android:layout_alignParentBottom="true" />

@@ -7,10 +7,10 @@
         android:id="@+id/ivPicture"
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:src="@drawable/add_icon"
         android:layout_marginBottom="55dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerInside" />
 
     <LinearLayout
         android:id="@+id/llInfo"

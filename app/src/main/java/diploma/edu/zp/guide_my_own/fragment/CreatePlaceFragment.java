@@ -127,7 +127,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
                         .allowRetry(true)
                         .labelRetry(R.string.retry)
                         .primaryColor(ContextCompat.getColor(getContext(), R.color.white))
-                        .maxAllowedFileSize(1024 * 1024)
+                        .maxAllowedFileSize(1024 * 2)
                         .qualityProfile(MaterialCamera.QUALITY_480P)
                         .labelConfirm(R.string.use_photo)
                         .stillShot().labelConfirm(R.string.use_photo);

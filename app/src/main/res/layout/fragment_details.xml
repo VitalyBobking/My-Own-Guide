@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/ivPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/litupp_bg"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"/>
-
-    <LinearLayout
-        android:layout_below="@+id/ivPhoto"
-        android:layout_margin="16dp"
-        android:orientation="vertical"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:id="@+id/tvTitle"
-            android:text="TEXT"/>
 
-        <TextView
-            android:layout_marginTop="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:id="@+id/tvPlaceName"
-            android:text="TEXT"/>
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@drawable/litupp_bg"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"/>
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_below="@+id/ivPhoto"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:id="@+id/tvTitle"/>
+
+            <TextView
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:id="@+id/tvPlaceName"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>
