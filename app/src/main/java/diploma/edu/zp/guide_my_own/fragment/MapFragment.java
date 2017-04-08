@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -712,7 +713,26 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             ivPhoto.setImageBitmap(null);
 
             if (place.getUrl_pic() != null) {
-                ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(place.getUrl_pic()));
+                //ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(place.getUrl_pic()));
+                CreateBitmapFromPath.loadImage(mPlace.getUrl_pic())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<Bitmap>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Bitmap bitmap) {
+                                ivPhoto.setImageBitmap(bitmap);
+                            }
+                        });
             }
         } catch (Exception e) {
             e.printStackTrace();

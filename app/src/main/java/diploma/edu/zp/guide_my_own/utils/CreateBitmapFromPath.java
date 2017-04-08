@@ -7,12 +7,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import rx.Observable;
+
 /**
  * Created by Val on 2/28/2017.
  */
 
 public class CreateBitmapFromPath {
-    public static Bitmap loadImage(String path) {
+    public static Observable<Bitmap> loadImage(String path) {
         Bitmap b = null;
         try {
             File f=new File(path);
@@ -20,6 +22,7 @@ public class CreateBitmapFromPath {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return b;
+        return Observable.just(b);
+        //return b;
     }
 }

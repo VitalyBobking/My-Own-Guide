@@ -1,5 +1,6 @@
 package diploma.edu.zp.guide_my_own.adapter;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,9 @@ import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 /**
@@ -50,8 +54,28 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
 
         String path = place.getUrl_pic();
 
-        if (path != null)
-            holder.ivPicture.setImageBitmap(CreateBitmapFromPath.loadImage(path));
+        if (path != null) {
+            CreateBitmapFromPath.loadImage(path)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Bitmap>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Bitmap bitmap) {
+                            holder.ivPicture.setImageBitmap(bitmap);
+                        }
+                    });
+
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,9 @@ import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.activity.CountryActivity;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Val on 3/6/2017.
@@ -53,7 +57,26 @@ public class DetailsFragment extends Fragment {
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
         TextView tvPlaceName = (TextView) v.findViewById(R.id.tvPlaceName);
 
-        ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(mPlace.getUrl_pic()));
+        //ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(mPlace.getUrl_pic()));
+        CreateBitmapFromPath.loadImage(mPlace.getUrl_pic())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        ivPhoto.setImageBitmap(bitmap);
+                    }
+                });
         tvTitle.setText(mPlace.getTitle());
         tvPlaceName.setText(mPlace.getPlaceName());
 
