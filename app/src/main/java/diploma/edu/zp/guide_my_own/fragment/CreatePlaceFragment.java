@@ -105,39 +105,44 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnTakePicture) {
-            File saveDir = null;
-
-            final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
-
-            try {
-                saveDir = new File(fullPath[0]);
-                if (!saveDir.exists()) {
-                    Log.e("dir mk dir", String.valueOf(saveDir.mkdirs()));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (saveDir != null) {
-                MaterialCamera materialCamera = new MaterialCamera(getActivity())
-                        .saveDir(saveDir)
-                        .autoSubmit(false)
-                        .showPortraitWarning(false)
-                        .defaultToFrontFacing(false)
-                        .allowRetry(true)
-                        .labelRetry(R.string.retry)
-                        .primaryColor(ContextCompat.getColor(getContext(), R.color.white))
-                        .maxAllowedFileSize(1024 * 2)
-                        .qualityProfile(MaterialCamera.QUALITY_480P)
-                        .labelConfirm(R.string.use_photo)
-                        .stillShot().labelConfirm(R.string.use_photo);
-
-                materialCamera.start(CAMERA_RQ);
-            }
+            takePhoto();
         } else if (view.getId() == R.id.btnSave) {
             fillDB();
         }
     }
+
+    private void takePhoto() {
+        File saveDir = null;
+
+        final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
+
+        try {
+            saveDir = new File(fullPath[0]);
+            if (!saveDir.exists()) {
+                Log.e("dir mk dir", String.valueOf(saveDir.mkdirs()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (saveDir != null) {
+            MaterialCamera materialCamera = new MaterialCamera(getActivity())
+                    .saveDir(saveDir)
+                    .autoSubmit(false)
+                    .showPortraitWarning(false)
+                    .defaultToFrontFacing(false)
+                    .allowRetry(true)
+                    .labelRetry(R.string.retry)
+                    .primaryColor(ContextCompat.getColor(getContext(), R.color.white))
+                    .maxAllowedFileSize(1024 * 2)
+                    .qualityProfile(MaterialCamera.QUALITY_480P)
+                    .labelConfirm(R.string.use_photo)
+                    .stillShot().labelConfirm(R.string.use_photo);
+
+            materialCamera.start(CAMERA_RQ);
+        }
+    }
+
 
     private void fillDB() {
         if (etTitle.getText().toString().length() > 1) {

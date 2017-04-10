@@ -8,10 +8,10 @@ import android.support.v4.app.Fragment;
  */
 
 public class DialogToastFragment extends Fragment {
-    ProgressDialog progress;
-    AlertDialogFragment errorDialog;
-    AlertDialogFragment customDialog;
-    AlertDialogFragment successAlertDialog ;
+    private ProgressDialog progress;
+    private AlertDialogFragment errorDialog;
+    private AlertDialogFragment customDialog;
+    private AlertDialogFragment successAlertDialog ;
 
     protected void showProgress(String message){
         if(progress!=null)
