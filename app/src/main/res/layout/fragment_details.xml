@@ -11,9 +11,8 @@
             android:id="@+id/ivPhoto"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:src="@drawable/litupp_bg"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside"/>
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:layout_below="@+id/ivPhoto"

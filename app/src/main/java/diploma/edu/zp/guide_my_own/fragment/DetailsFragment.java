@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.activity.CountryActivity;
 import diploma.edu.zp.guide_my_own.model.Place;
@@ -58,25 +60,9 @@ public class DetailsFragment extends Fragment {
         TextView tvPlaceName = (TextView) v.findViewById(R.id.tvPlaceName);
 
         //ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(mPlace.getUrl_pic()));
-        CreateBitmapFromPath.loadImage(mPlace.getUrl_pic())
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Bitmap>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        ivPhoto.setImageBitmap(bitmap);
-                    }
-                });
+        if (mPlace.getUrl_pic() != null) {
+            ImageLoader.getInstance().displayImage("file:///"+mPlace.getUrl_pic(), ivPhoto);
+        }
         tvTitle.setText(mPlace.getTitle());
         tvPlaceName.setText(mPlace.getPlaceName());
 

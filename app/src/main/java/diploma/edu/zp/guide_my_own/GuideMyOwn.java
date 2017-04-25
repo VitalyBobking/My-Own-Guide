@@ -4,6 +4,13 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+
 import diploma.edu.zp.guide_my_own.service.LocationService;
 import diploma.edu.zp.guide_my_own.service.RetrofitApi;
 import diploma.edu.zp.guide_my_own.service.ServiceGenerator;
@@ -22,6 +29,23 @@ public class GuideMyOwn extends Application {
     public void onCreate() {
         super.onCreate();
         context = this;
+
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .resetViewBeforeLoading(true)
+                .cacheOnDisk(true)
+                .cacheInMemory(true)
+                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                .displayer(new FadeInBitmapDisplayer(300))
+                .build();
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(defaultOptions)
+                .memoryCache(new WeakMemoryCache())
+                .writeDebugLogs()
+                .diskCacheSize(50 * 1024 * 1024)
+                .build();
+
+        ImageLoader.getInstance().init(config);
 
         sRetrofitApi = new ServiceGenerator().createService(RetrofitApi.class, GOOGLE_MAP_API);
 

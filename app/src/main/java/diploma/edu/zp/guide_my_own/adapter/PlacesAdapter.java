@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -55,26 +56,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         String path = place.getUrl_pic();
 
         if (path != null) {
-            CreateBitmapFromPath.loadImage(path)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Bitmap>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(Bitmap bitmap) {
-                            holder.ivPicture.setImageBitmap(bitmap);
-                        }
-                    });
-
+            ImageLoader.getInstance().displayImage("file:///"+path, holder.ivPicture);
         }
     }
 
