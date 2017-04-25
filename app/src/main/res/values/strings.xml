@@ -47,5 +47,6 @@
 
     <!--Dialogs-->
     <string name="alert">Alert</string>
+    <string name="logo">Logo</string>
 
 </resources>
