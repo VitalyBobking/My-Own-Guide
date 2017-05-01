@@ -1,5 +1,6 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -233,6 +235,16 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
             path = data.getData().getPath();
             setImage();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        super.onDestroy();
     }
 
     private void setImage() {

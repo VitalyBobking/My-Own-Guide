@@ -88,7 +88,7 @@ public class AlertDialogFragment extends DialogFragment {
      */
     public static AlertDialogFragment success(String msg) {
         AlertDialogFragment f = AlertDialogFragment.newInstance(
-                msg, R.string.done, android.R.string.ok, android.R.drawable.ic_dialog_info);
+                msg, R.string.done, android.R.string.ok, R.drawable.ic_done_black_24dp);
         return f;
     }
 

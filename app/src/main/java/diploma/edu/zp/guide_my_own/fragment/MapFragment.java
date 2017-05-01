@@ -593,7 +593,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                     transaction.commit();
                 }).setNegativeButton(android.R.string.no, (dialog, which) -> {
 
-                }).setIcon(android.R.drawable.ic_dialog_alert);
+                }).setIcon(R.drawable.ic_priority_high_black_24dp);
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
