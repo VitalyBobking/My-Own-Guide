@@ -48,5 +48,11 @@
     <!--Dialogs-->
     <string name="alert">Alert</string>
     <string name="logo">Logo</string>
-
+    <string name="can_not_get_loc">Can\'t get your location</string>
+    <string name="create_new_place">Create new place!</string>
+    <string name="want_create_place">Do you want to create?</string>
+    <string name="place_added_successful">Place was added successful!</string>
+    <string name="km"> km</string>
+    <string name="m"> m</string>
+    <string name="wait_loc_gotten">Please wait when your location will be gotten</string>
 </resources>

@@ -137,7 +137,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                 LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
                 createPlace(latLng);
             } else {
-                showErrorDialog("Please wait when your location will be gotten");
+                showErrorDialog(getString(R.string.wait_loc_gotten));
             }
         });
 
@@ -161,29 +161,23 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
                         if (popupView == null)
                             fab.setVisibility(View.VISIBLE);
-                        Log.d("bottomsheet-", "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
-                        Log.d("bottomsheet-", "STATE_DRAGGING");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
                         clearPolyline();
                         removePopUp();
                         fab.setVisibility(View.GONE);
-                        Log.d("bottomsheet-", "STATE_EXPANDED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
                         clearPolyline();
                         removePopUp();
                         fab.setVisibility(View.GONE);
-                        Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN:
                         fab.setVisibility(View.VISIBLE);
-                        Log.d("bottomsheet-", "STATE_HIDDEN");
                         break;
                     default:
-                        Log.d("bottomsheet-", "STATE_SETTLING");
                         break;
                 }
             }
@@ -362,10 +356,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         String unit;
         if (totalDistance > 1000) {
             distance = (int) totalDistance / 1000;
-            unit = " km";
+            unit = getString(R.string.km);
         } else {
             distance = (int) totalDistance * 10;
-            unit = " m";
+            unit = getString(R.string.m);
         }
         ((TextView)popupView.findViewById(R.id.tvDistanceToCacheInfo)).setText(String.valueOf(distance + unit));
         ((TextView)popupView.findViewById(R.id.tvTitle)).setText(mPlace.getTitle());
@@ -576,7 +570,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     }
 
     public void done() {
-        showSuccess("Place was added successful!");
+        showSuccess(getString(R.string.place_added_successful));
         mGoogleMap.clear();
         places = GetPlaces.getPlaces(getContext(), false, null);
         addMarkers();
@@ -584,8 +578,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     private void createPlace(LatLng latLng) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setTitle("Create new place!")
-                .setMessage("Do you want to create?")
+                .setTitle(getString(R.string.create_new_place))
+                .setMessage(getString(R.string.want_create_place))
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                     transaction.add(R.id.content_main, CreatePlaceFragment.newInstance(latLng), CreatePlaceFragment.class.getName());
@@ -638,7 +632,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                             }
                         });
             } else {
-                showErrorDialog("Can't get your location");
+                showErrorDialog(getString(R.string.can_not_get_loc));
             }
         });
         return false;

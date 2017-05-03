@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">guide-my-own</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="map_type">Тип карты</string>
+
+    <!-- Map -->
+    <string name="choose_map_type">Выберите тип карты</string>
+    <string name="map_normal">Нормальная</string>
+    <string name="map_hybrid">Гибридная</string>
+    <string name="map_satellite">Спутник</string>
+    <string name="map_terrain">Ландшафт</string>
+
+    <string name="map">Карта</string>
+    <string name="im_sure">Я уверен</string>
+    <string name="retry">Повторить</string>
+    <string name="exit_app">Выйти с приложения</string>
+    <string name="open">Открыть</string>
+    <string name="permission_denied">Доступ запрещен</string>
+    <string name="permissions_denied_message">Ван надо разрешить доступ к метоположению прежде
+        чем Вы сможете использовать приложение.</string>
+    <string name="getting_your_location">Получение локации</string>
+    <string name="building_path">Построение пути</string>
+    <string name="take_a_picture">Сделать фото</string>
+    <string name="use_photo">Использовать фото</string>
+
+    <string name="BackDropBottomSheetBehavior">diploma.edu.zp.guide_my_own.lib.BackdropBottomSheetBehavior</string>
+    <string name="BottomSheetBehaviorGoogleMapsLike">diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike</string>
+    <string name="ScrollAwareFABBehavior">diploma.edu.zp.guide_my_own.lib.ScrollAwareFABBehavior</string>
+    <string name="MergedAppBarLayoutBehavior">diploma.edu.zp.guide_my_own.lib.MergedAppBarLayoutBehavior</string>
+    <string name="ScrollingAppBarLayoutBehavior">diploma.edu.zp.guide_my_own.lib.ScrollingAppBarLayoutBehavior</string>
+    <string name="location_access_disabled">Доступ к местоположению отключен</string>
+    <string name="open_settings">Открыть настройки</string>
+    <string name="cancel">Отмена</string>
+
+    <!-- MY PLACES -->
+    <string name="my_places">Мои места</string>
+    <string name="no_places_defined">Места не определены</string>
+    <string name="delete">Удалить</string>
+    <string name="key_binding_default_toolbar_name">Modal-Toolbar-Title</string>
+
+    <!-- Create Place -->
+    <string name="name">Имя</string>
+    <string name="done">Готово</string>
+    <string name="indefined">Не определено</string>
+
+    <!--Dialogs-->
+    <string name="alert">Оповещение</string>
+    <string name="logo">Логотип</string>
+    <string name="can_not_get_loc">Не возможно получить Ваше местоположение</string>
+    <string name="create_new_place">Создать новое место!</string>
+    <string name="want_create_place">Хотите создать?</string>
+    <string name="place_added_successful">Место добавлено успешно!</string>
+    <string name="km"> км</string>
+    <string name="m"> м</string>
+    <string name="wait_loc_gotten">Пожалуйста подождите пока Ваше местоположение будет
+        получено</string>
+</resources>

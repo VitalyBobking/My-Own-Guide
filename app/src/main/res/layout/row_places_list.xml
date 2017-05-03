@@ -7,7 +7,7 @@
         android:id="@+id/ivPicture"
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="150dp"
         android:src="@drawable/add_icon"
         android:layout_marginBottom="55dp"
         android:scaleType="centerInside" />
@@ -27,7 +27,6 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textStyle="bold"
-            android:text="fddfg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

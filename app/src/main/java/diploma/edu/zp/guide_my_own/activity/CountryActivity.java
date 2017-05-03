@@ -51,8 +51,6 @@ public class CountryActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
 
-            Log.e("size ---->", String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
-
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
                 getSupportFragmentManager().popBackStack();
             } else {

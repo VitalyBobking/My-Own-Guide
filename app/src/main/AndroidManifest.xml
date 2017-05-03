@@ -55,9 +55,6 @@
         <activity android:name=".activity.CountryActivity"/>
 
         <activity
-            android:name=".activity.MapActivity" android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity
             android:name="com.afollestad.materialcamera.CaptureActivity"
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity
