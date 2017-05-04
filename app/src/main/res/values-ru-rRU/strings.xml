@@ -43,6 +43,7 @@
 
     <!-- Create Place -->
     <string name="name">Имя</string>
+    <string name="description">Описание</string>
     <string name="done">Готово</string>
     <string name="indefined">Не определено</string>
 
@@ -57,4 +58,8 @@
     <string name="m"> м</string>
     <string name="wait_loc_gotten">Пожалуйста подождите пока Ваше местоположение будет
         получено</string>
+    <string name="something_went_wrong">Что то пошло не так</string>
+    <string name="enter_place_name">Пожалуйста введите название места</string>
+    <string name="you_sure">Вы уверены?</string>
+    <string name="you_lose_this_place">Вы потеряете это место</string>
 </resources>

@@ -57,6 +57,7 @@ public class DetailsFragment extends Fragment {
 
         ImageView ivPhoto = (ImageView) v.findViewById(R.id.ivPhoto);
         TextView tvTitle = (TextView) v.findViewById(R.id.tvTitle);
+        TextView tvDescription = (TextView) v.findViewById(R.id.tvDescription);
         TextView tvPlaceName = (TextView) v.findViewById(R.id.tvPlaceName);
 
         //ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(mPlace.getUrl_pic()));
@@ -64,6 +65,13 @@ public class DetailsFragment extends Fragment {
             ImageLoader.getInstance().displayImage("file:///"+mPlace.getUrl_pic(), ivPhoto);
         }
         tvTitle.setText(mPlace.getTitle());
+
+        String desc = mPlace.getDescription();
+        if (desc != null)
+            tvDescription.setText(mPlace.getDescription());
+        else
+            tvDescription.setVisibility(View.GONE);
+
         tvPlaceName.setText(mPlace.getPlaceName());
 
         return v;

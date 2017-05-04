@@ -58,7 +58,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     private ImageView ivPicture;
     private RelativeLayout rlPicture;
     private TextView tvPlace;
-    private EditText etTitle;
+    private EditText etTitle, etDescr;
     private LatLng latLng;
 
     @Override
@@ -86,9 +86,11 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         btnSave.setOnClickListener(this);
 
         etTitle = (EditText) v.findViewById(R.id.etTitle);
+        etDescr = (EditText) v.findViewById(R.id.etDescr);
         etTitle.setOnClickListener(this);
+        etDescr.setOnClickListener(this);
 
-        etTitle.setOnEditorActionListener((textView, i, keyEvent) -> {
+        etDescr.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
                 fillDB();
             }
@@ -150,7 +152,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         if (etTitle.getText().toString().length() > 1) {
             long res = FillDataBase.fill(getActivity(), makePlace());
             if (res == -1) {
-                showErrorDialog("Something went wrong");
+                showErrorDialog(getString(R.string.something_went_wrong));
             } else {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 Fragment fragment = fragmentManager.findFragmentByTag(getString(R.string.map));
@@ -161,13 +163,17 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
 
             }
         } else {
-            showErrorDialog("Please enter place name");
+            showErrorDialog(getString(R.string.enter_place_name));
         }
     }
 
     private Place makePlace() {
         Place place = new Place();
         place.setTitle(etTitle.getText().toString());
+
+        if (etDescr.getText() != null)
+            place.setTitle(etDescr.getText().toString());
+
         place.setLatitude(latLng.latitude);
         place.setLongitude(latLng.longitude);
         place.setUrl_pic(path);

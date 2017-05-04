@@ -28,8 +28,12 @@ import rx.subjects.PublishSubject;
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHolder> {
     private PublishSubject<View> mViewClickSubject = PublishSubject.create();
+    private PublishSubject<View> mViewOnLongClickSubject = PublishSubject.create();
     public Observable<View> getViewClickedObservable() {
         return mViewClickSubject.asObservable();
+    }
+    public Observable<View> getViewOnLongObservable() {
+        return mViewOnLongClickSubject.asObservable();
     }
     private List<Place> places;
 
@@ -43,6 +47,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
                 .map(aVoid -> itemView)
                 .subscribe(mViewClickSubject);
 
+        RxView.longClicks(itemView)
+                .takeUntil(RxView.detaches(parent))
+                .map(aVoid -> itemView)
+                .subscribe(mViewOnLongClickSubject);
+
         return new MyViewHolder(itemView);
     }
 
@@ -51,7 +60,9 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         Place place = places.get(position);
         holder.tvCategory.setText(place.getCountry());
 
-        holder.itemView.setTag(place.getCountry());
+        place.setPosition(position);
+
+        holder.itemView.setTag(place);
 
         String path = place.getUrl_pic();
 
@@ -84,8 +95,4 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
     public PlacesAdapter(List<Place> places) {
         this.places = places;
     }
-
-
-
-
 }

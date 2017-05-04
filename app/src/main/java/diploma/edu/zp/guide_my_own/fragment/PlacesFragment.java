@@ -1,12 +1,12 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import diploma.edu.zp.guide_my_own.DBHelper.DeletePlace;
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.activity.CountryActivity;
 import diploma.edu.zp.guide_my_own.adapter.PlacesAdapter;
@@ -106,49 +107,45 @@ public class PlacesFragment extends DialogToastFragment {
             @Override
             public void onNext(View view) {
                 Intent intent = new Intent(getActivity(), CountryActivity.class);
-                intent.putExtra(CountryFragment.EXTRA_COUNTRY, String.valueOf(view.getTag()));
+                intent.putExtra(CountryFragment.EXTRA_COUNTRY, String.valueOf(((Place)view.getTag()).getCountry()));
                 startActivity(intent);
             }
         });
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        adapter.getViewOnLongObservable().subscribe(new Subscriber<View>() {
+            @Override
+            public void onCompleted() {}
+
+            @Override
+            public void onError(Throwable e) {
+                showErrorDialog(e.getMessage());
+            }
+
+            @Override
+            public void onNext(View view) {
+                Place p = (Place)view.getTag();
+                removeDialog(p.getId(), p.getPosition());
+            }
+        });
     }
 
-    private ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    private void removeDialog(int id, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setTitle(getString(R.string.you_sure))
+                .setMessage(getString(R.string.you_lose_this_place))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    boolean isSuccess = DeletePlace.delete(getContext(), id);
+                    if (isSuccess) {
+                        adapter.remove(position);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        showErrorDialog(getString(R.string.something_went_wrong));
+                    }
+                }).setNegativeButton(android.R.string.no, (dialog, which) -> {
+                    dialog.dismiss();
+                });
 
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-            adapter.remove(viewHolder.getAdapterPosition());
-        }
-
-        @Override
-        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            //Available drag and drop directions
-            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            //Available swipe directions
-            int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-            return makeMovementFlags(dragFlags, swipeFlags);
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        //Disable or Enable drag and drop by long press
-        @Override
-        public boolean isLongPressDragEnabled() {
-            //return false;
-            return true;
-        }
-
-        //Disable or Enable swiping
-        @Override
-        public boolean isItemViewSwipeEnabled() {
-            //return false;
-            return true;
-        }
-
-    };
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 }

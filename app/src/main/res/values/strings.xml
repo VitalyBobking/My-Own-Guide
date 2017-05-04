@@ -42,6 +42,7 @@
 
     <!-- Create Place -->
     <string name="name">Name</string>
+    <string name="description">Description</string>
     <string name="done">Done</string>
     <string name="indefined">Indefined</string>
 
@@ -55,4 +56,8 @@
     <string name="km"> km</string>
     <string name="m"> m</string>
     <string name="wait_loc_gotten">Please wait when your location will be gotten</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="enter_place_name">Please enter place name</string>
+    <string name="you_sure">Are you sure?</string>
+    <string name="you_lose_this_place">You\'ll lose this place</string>
 </resources>

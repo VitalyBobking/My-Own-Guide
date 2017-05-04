@@ -24,6 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                android:textSize="24sp"
                 android:id="@+id/tvTitle"/>
 
             <TextView
@@ -32,6 +33,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:id="@+id/tvPlaceName"/>
+
+            <TextView
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:id="@+id/tvDescription"/>
         </LinearLayout>
 
     </RelativeLayout>
