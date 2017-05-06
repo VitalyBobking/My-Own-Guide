@@ -137,26 +137,7 @@ public class PlacesFragment extends DialogToastFragment {
                     List<Integer> ids = DeletePlace.deleteCountry(getContext(), country);
                     if (ids != null) {
                         adapter.remove(country);
-                    } else {
-                        showErrorDialog(getString(R.string.something_went_wrong));
-                    }
-                }).setNegativeButton(android.R.string.no, (dialog, which) -> {
-                    dialog.dismiss();
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    private void removeDialog(int id, int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setTitle(getString(R.string.you_sure))
-                .setMessage(getString(R.string.you_lose_this_place))
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    boolean isSuccess = DeletePlace.deleteCountry(getContext(), id);
-                    if (isSuccess) {
-                        adapter.remove(position);
-                        adapter.notifyDataSetChanged();
+                        showSuccess(getString(R.string.deleted_success));
                     } else {
                         showErrorDialog(getString(R.string.something_went_wrong));
                     }

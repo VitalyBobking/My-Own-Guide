@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 public class DeletePlace {
-    public static boolean deleteCountry(Context context, int id) {
+    public static boolean delete(Context context, int id) {
         DBHelper dbHelper = null;
         SQLiteDatabase db = null;
         try {

@@ -60,4 +60,5 @@
     <string name="enter_place_name">Please enter place name</string>
     <string name="you_sure">Are you sure?</string>
     <string name="you_lose_this_place">You\'ll lose this place</string>
+    <string name="deleted_success">Place was deleted successfully</string>
 </resources>

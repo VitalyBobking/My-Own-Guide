@@ -1,5 +1,6 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,12 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import diploma.edu.zp.guide_my_own.DBHelper.DeletePlace;
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.activity.CountryActivity;
 import diploma.edu.zp.guide_my_own.adapter.CountryAdapter;
+import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 import rx.Subscriber;
@@ -27,7 +31,7 @@ import rx.Subscriber;
  * Created by Val on 2/24/2017.
  */
 
-public class CountryFragment extends Fragment {
+public class CountryFragment extends DialogToastFragment {
     public static final String EXTRA_COUNTRY = "EXTRA_COUNTRY";
     private String country;
 
@@ -104,13 +108,47 @@ public class CountryFragment extends Fragment {
 
             @Override
             public void onNext(View view) {
-                Log.e("view ---->", String.valueOf(((Place)view.getTag()).getPlaceName()));
-
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.addToBackStack(null);
                 transaction.replace(R.id.country_main, DetailsFragment.newInstance((Place) view.getTag()));
                 transaction.commit();
             }
         });
+
+        adapter.getViewOnLongObservable().subscribe(new Subscriber<View>() {
+            @Override
+            public void onCompleted() {}
+
+            @Override
+            public void onError(Throwable e) {
+                showErrorDialog(e.getMessage());
+            }
+
+            @Override
+            public void onNext(View view) {
+                removeDialog(String.valueOf(view.getTag()));
+            }
+        });
+    }
+
+    private void removeDialog(String ids) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setTitle(getString(R.string.you_sure))
+                .setMessage(getString(R.string.you_lose_this_place))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    String[] arr = ids.split(",");
+                    boolean isSuccess = DeletePlace.delete(getContext(), Integer.valueOf(arr[0]));
+                    if (isSuccess) {
+                        adapter.remove(Integer.valueOf(arr[1]));
+                        showSuccess(getString(R.string.deleted_success));
+                    } else {
+                        showErrorDialog(getString(R.string.something_went_wrong));
+                    }
+                }).setNegativeButton(android.R.string.no, (dialog, which) -> {
+                    dialog.dismiss();
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
