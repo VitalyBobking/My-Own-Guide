@@ -92,6 +92,17 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
         notifyItemRemoved(position);
     }
 
+    public void remove(String country) {
+        int position = 0;
+        for (Place p : places) {
+            if (p.getCountry().equals(country)) {
+                places.remove(position);
+                notifyItemRemoved(position);
+            }
+            position++;
+        }
+    }
+
     public PlacesAdapter(List<Place> places) {
         this.places = places;
     }
