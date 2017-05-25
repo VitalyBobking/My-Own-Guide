@@ -1,6 +1,5 @@
 package diploma.edu.zp.guide_my_own.adapter;
 
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +14,7 @@ import java.util.List;
 
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.model.Place;
-import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 /**

@@ -61,7 +61,7 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.MyViewHo
         Place place = places.get(position);
         holder.tvCategory.setText(place.getPlaceName());
 
-        holder.itemView.setTag(place.getId()+","+position);
+        holder.itemView.setTag(place);
 
         String path = place.getUrl_pic();
 

@@ -104,6 +104,7 @@ public class CountryFragment extends DialogToastFragment {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
             }
 
             @Override
