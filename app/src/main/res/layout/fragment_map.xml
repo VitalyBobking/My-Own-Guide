@@ -36,6 +36,38 @@
 
     </android.support.v4.widget.NestedScrollView>
 
+   <!-- <TextView
+        android:id="@+id/tvBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#00FF00"
+        android:text="SUPER"
+        android:textColor="#000"
+        android:textSize="48sp" />-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/relativeLayout">
+
+        <ImageView
+            android:id="@+id/closeAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/btn_dialog" />
+
+        <ImageView
+            android:id="@+id/ivBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            app:srcCompat="@drawable/mypic" />
+
+    </RelativeLayout>
+
+
+
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

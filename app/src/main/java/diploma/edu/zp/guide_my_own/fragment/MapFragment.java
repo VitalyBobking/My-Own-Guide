@@ -32,6 +32,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -109,6 +111,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private View popupView;
     private RelativeLayout rootLayout;
 
+    private Animation mFadeInAnimation, mFadeOutAnimation;
+    private ImageView ivBanner,closeAnimation;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +135,26 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         mapView.getMapAsync(this);
 
         rootLayout = (RelativeLayout) view.findViewById(R.id.rootLayout);
+
+        ivBanner = (ImageView) view.findViewById(R.id.ivBanner);
+        closeAnimation = (ImageView) view.findViewById(R.id.closeAnimation);
+
+        mFadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fadein);
+        mFadeOutAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fadeout);
+        mFadeInAnimation.setAnimationListener(animationFadeInListener);
+        mFadeOutAnimation.setAnimationListener(animationFadeOutListener);
+        ivBanner.startAnimation(mFadeInAnimation);
+
+
+
+        closeAnimation.setOnClickListener(v -> {
+
+            View myView = view.findViewById(R.id.relativeLayout);
+            ViewGroup parent = (ViewGroup) myView.getParent();
+            parent.removeView(myView);
+
+        });
+
 
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(view2 -> {
@@ -192,6 +218,48 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
         return view;
     }
+
+    Animation.AnimationListener animationFadeOutListener = new Animation.AnimationListener() {
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            ivBanner.startAnimation(mFadeInAnimation);
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void onAnimationStart(Animation animation) {
+            // TODO Auto-generated method stub
+        }
+    };
+
+    Animation.AnimationListener animationFadeInListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            ivBanner.startAnimation(mFadeOutAnimation);
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void onAnimationStart(Animation animation) {
+            // TODO Auto-generated method stub
+        }
+    };
+
+
+
+
+
 
     private void addMarkers() {
         if (markers == null) {
@@ -732,4 +800,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             e.printStackTrace();
         }
     }
+
+
 }

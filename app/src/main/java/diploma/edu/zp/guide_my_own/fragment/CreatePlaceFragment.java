@@ -110,6 +110,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     public void onClick(View view) {
         if (view.getId() == R.id.btnTakePicture) {
             takePhoto();
+
         } else if (view.getId() == R.id.btnSave) {
             fillDB();
         }
