@@ -121,7 +121,6 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         transaction.replace(R.id.content_main,camera2BasicFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-        camera2BasicFragment.takePicture();
 
        /* File saveDir = null;
 
