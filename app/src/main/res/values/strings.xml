@@ -6,6 +6,12 @@
 
     <string name="map_type">Map Type</string>
 
+    <string name="picture">Picture</string>
+    <string name="description_info">Info</string>
+    <string name="request_permission">This sample needs camera permission.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <string name="intro_message"/>
+
     <!-- Map -->
     <string name="choose_map_type">Choose Map Type</string>
     <string name="map_normal">Normal</string>
@@ -61,4 +67,7 @@
     <string name="you_sure">Are you sure?</string>
     <string name="you_lose_this_place">You\'ll lose this place</string>
     <string name="deleted_success">Place was deleted successfully</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

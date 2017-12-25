@@ -80,10 +80,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by Val on 1/14/2017.
- */
-
 public class MapFragment extends DialogToastFragment implements OnMapReadyCallback, /*LocationListener,*/ GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
     public static final String BROADCAST_ACTION = "diploma.edu.zp.guide_my_own.location_service";
     public static final String SERVICE_LOCATION = "diploma.edu.zp.guide_my_own.SERVICE_LOCATION";

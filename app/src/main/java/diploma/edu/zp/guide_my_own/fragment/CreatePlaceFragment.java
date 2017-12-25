@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +21,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialcamera.MaterialCamera;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +30,7 @@ import java.util.Locale;
 
 import diploma.edu.zp.guide_my_own.DBHelper.FillDataBase;
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.DeleteFileByPath;
@@ -60,6 +57,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     private TextView tvPlace;
     private EditText etTitle, etDescr;
     private LatLng latLng;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,7 +115,8 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     }
 
     private void takePhoto() {
-        File saveDir = null;
+
+       /* File saveDir = null;
 
         final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
 
@@ -145,7 +144,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
                     .stillShot().labelConfirm(R.string.use_photo);
 
             materialCamera.start(CAMERA_RQ);
-        }
+        }*/
     }
 
 

@@ -10,4 +10,6 @@
     <color name="a_100">#f50057</color>
     <color name="black">#000000</color>
     <color name="gray">#222222</color>
+
+    <color name="control_background">#cc4285f4</color>
 </resources>
