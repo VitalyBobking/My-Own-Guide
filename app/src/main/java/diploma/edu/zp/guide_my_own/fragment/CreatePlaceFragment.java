@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,14 +108,20 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnTakePicture) {
-            takePhoto();
-
+                takePhoto();
         } else if (view.getId() == R.id.btnSave) {
             fillDB();
         }
     }
 
     private void takePhoto() {
+
+        Camera2BasicFragment camera2BasicFragment = new Camera2BasicFragment();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_main,camera2BasicFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        camera2BasicFragment.takePicture();
 
        /* File saveDir = null;
 
