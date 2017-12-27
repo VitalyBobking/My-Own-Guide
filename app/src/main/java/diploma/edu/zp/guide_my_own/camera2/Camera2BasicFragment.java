@@ -61,6 +61,7 @@ import java.util.concurrent.TimeUnit;
 
 import diploma.edu.zp.guide_my_own.R;
 
+
 public  class Camera2BasicFragment extends Fragment
         implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -165,7 +166,6 @@ public  class Camera2BasicFragment extends Fragment
         @Override
         public void onImageAvailable(ImageReader reader) {
             Image image = null;
-
             try {
                 image = reader.acquireLatestImage();
                 ByteBuffer buffer = image.getPlanes()[0].getBuffer();
@@ -196,21 +196,40 @@ public  class Camera2BasicFragment extends Fragment
             }
         }
     };
-    private static File getOutputMediaFile() {
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "MyCameraApp");
+    public File getOutputMediaFile() {
+
+        File saveDir = null;
+        final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
+
+        try {
+            saveDir = new File(fullPath[0]);
+            if (!saveDir.exists()) {
+                Log.e("dir mk dir", String.valueOf(saveDir.mkdirs()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (saveDir != null) {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                    .format(new Date());
+            File mediaFile;
+            mediaFile = new File(saveDir.getPath() + File.separator
+                    + "IMG_" + timeStamp + ".jpg");
+            return mediaFile;
+        }
+
+
+       /* File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "MyCameraApp");
 
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("MyCameraApp", "failed to create directory");
                 return null;
             }
-        }
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
-        File mediaFile;
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + timeStamp + ".jpg");
-        return mediaFile;
+        }*/
+
+        return saveDir;
     }
 
 
@@ -227,7 +246,9 @@ public  class Camera2BasicFragment extends Fragment
                     Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
                     if (afState == null) {
                         captureStillPicture();
-                    } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
+                    } else if (afState == 0) {
+                        captureStillPicture();
+                    }else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
                             CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
                         Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                         if (aeState == null ||
@@ -325,7 +346,8 @@ public  class Camera2BasicFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_camera2_basic, container, false);
+        View view = inflater.inflate(R.layout.fragment_camera2_basic, container, false);
+        return view;
     }
 
     @Override
@@ -592,18 +614,16 @@ public  class Camera2BasicFragment extends Fragment
     }
 
 
-    private void takePicture() {
+    public void takePicture() {
         lockFocus();
     }
 
-    private void lockFocus() {
+    public void lockFocus() {
         try {
 
-            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-                    CameraMetadata.CONTROL_AF_TRIGGER_START);
+            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,CameraMetadata.CONTROL_AF_TRIGGER_START);
             mState = STATE_WAITING_LOCK;
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
-                    mBackgroundHandler);
+            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -650,7 +670,7 @@ public  class Camera2BasicFragment extends Fragment
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
                     showToast("Saved: " + mFile);
-                    Log.d(TAG, mFile.toString());
+//                    Log.d(TAG, mFile.toString());
                     unlockFocus();
                 }
             };
@@ -684,36 +704,22 @@ public  class Camera2BasicFragment extends Fragment
         }
     }
 
-   /* @Override
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.picture: {
                 takePicture();
                 break;
             }
-            case R.id.info: {
-                Activity activity = getActivity();
-                if (null != activity) {
-                    new AlertDialog.Builder(activity)
-                            .setMessage(R.string.intro_message)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show();
-                }
-                break;
-            }
+
         }
-    }*/
+    }
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
         if (mFlashSupported) {
             requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
 
