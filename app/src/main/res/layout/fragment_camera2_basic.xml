@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/camera_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment
-        android:id="@+id/texture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:id="@+id/rlCamera">
+
+        <diploma.edu.zp.guide_my_own.camera2.AutoFitTextureView
+            android:id="@+id/texture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"/>
+
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/control"
@@ -16,14 +27,39 @@
         android:layout_height="112dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@color/control_background">
+        android:background="@color/control_background"
+        >
+
+
+
 
         <Button
             android:id="@+id/picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/picture" />
+            android:text="@string/picture"
+            android:visibility="visible"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnTryAgain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/try_again"
+            android:visibility="invisible"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btnSavePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/save"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            android:layout_marginStart="100dp"/>
 
     </FrameLayout>
 

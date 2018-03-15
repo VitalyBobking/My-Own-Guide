@@ -10,7 +10,7 @@
     <string name="description_info">Info</string>
     <string name="request_permission">This sample needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
-    <string name="intro_message"/>
+    <string name="intro_message" />
 
     <!-- Map -->
     <string name="choose_map_type">Choose Map Type</string>
@@ -70,4 +70,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">save</string>
+    <string name="todo">TODO</string>
+    <string name="repeat">repeat</string>
+    <string name="Camera">Camera</string>
+    <string name="try_again">TRY AGAIN</string>
+
+    <!--facebook-->
+    <string name="facebook_app_id">1841994936099181</string>
+    <string name="fb_login_protocol_scheme">fb1841994936099181</string>
+
 </resources>

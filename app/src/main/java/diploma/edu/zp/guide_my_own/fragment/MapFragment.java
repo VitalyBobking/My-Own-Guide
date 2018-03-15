@@ -107,8 +107,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private View popupView;
     private RelativeLayout rootLayout;
 
-    private Animation mFadeInAnimation, mFadeOutAnimation;
-    private ImageView ivBanner,closeAnimation;
+   // private Animation mFadeInAnimation, mFadeOutAnimation;
+   // private ImageView ivBanner,closeAnimation;
 
 
     @Override
@@ -132,7 +132,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
         rootLayout = (RelativeLayout) view.findViewById(R.id.rootLayout);
 
-        ivBanner = (ImageView) view.findViewById(R.id.ivBanner);
+        //Can add an animation
+       /* ivBanner = (ImageView) view.findViewById(R.id.ivBanner);
         closeAnimation = (ImageView) view.findViewById(R.id.closeAnimation);
 
         mFadeInAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.fadein);
@@ -149,7 +150,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             ViewGroup parent = (ViewGroup) myView.getParent();
             parent.removeView(myView);
 
-        });
+        });*/
 
 
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -214,8 +215,8 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
         return view;
     }
-
-    Animation.AnimationListener animationFadeOutListener = new Animation.AnimationListener() {
+        // add Animation
+  /*  Animation.AnimationListener animationFadeOutListener = new Animation.AnimationListener() {
 
         @Override
         public void onAnimationEnd(Animation animation) {
@@ -250,7 +251,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         public void onAnimationStart(Animation animation) {
             // TODO Auto-generated method stub
         }
-    };
+    };*/
 
 
 
@@ -796,6 +797,5 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             e.printStackTrace();
         }
     }
-
 
 }

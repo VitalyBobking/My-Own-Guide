@@ -27,7 +27,7 @@ public class GetPlaces {
             db = dbHelper.getReadableDatabase();
 
             if (where != null)
-                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " WHERE " + DBHelper.FeedEntry.COUNTRY + " = ?", new String[] {where}, null);
+                cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " WHERE " + DBHelper.FeedEntry.COUNTRY + (" =?"), new String[] {where}, null);
             else if (is_group_by)
                 cursor = db.rawQuery("SELECT * FROM " + DBHelper.FeedEntry.TABLE_NAME + " GROUP BY " + DBHelper.FeedEntry.COUNTRY, null);
             else

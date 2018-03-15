@@ -17,13 +17,14 @@
             android:layout_marginBottom="16dp"
             app:layout_widthPercent="100%"
             app:layout_heightPercent="50%">
+
             <ImageView
-                android:layout_height="300dp"
-                android:layout_width="match_parent"
-                android:scaleType="centerInside"
-                android:layout_alignParentTop="true"
                 android:id="@+id/ivPicture"
-                android:layout_alignParentBottom="true" />
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                android:scaleType="centerInside" android:contentDescription="TODO"/>
             <TextView
                 android:id="@+id/tvPlace"
                 android:background="@drawable/round_background"

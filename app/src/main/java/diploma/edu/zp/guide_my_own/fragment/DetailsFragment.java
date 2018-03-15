@@ -1,10 +1,10 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.activity.CountryActivity;
 import diploma.edu.zp.guide_my_own.model.Place;
-import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+
 
 /**
  * Created by Val on 3/6/2017.
@@ -63,6 +60,8 @@ public class DetailsFragment extends Fragment {
         //ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(mPlace.getUrl_pic()));
         if (mPlace.getUrl_pic() != null) {
             ImageLoader.getInstance().displayImage("file:///"+mPlace.getUrl_pic(), ivPhoto);
+            Log.e("------->Photo" ,String.valueOf(mPlace.getUrl_pic()));
+            Log.e("------->Photo" ,String.valueOf(ivPhoto));
         }
         tvTitle.setText(mPlace.getTitle());
 
