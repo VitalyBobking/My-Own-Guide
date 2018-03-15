@@ -14,13 +14,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 
 import diploma.edu.zp.guide_my_own.R;
-import diploma.edu.zp.guide_my_own.fragment.CreatePlaceFragment;
+import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
+import diploma.edu.zp.guide_my_own.camera2.PhotoCamera2;
 import diploma.edu.zp.guide_my_own.fragment.MapFragment;
 import diploma.edu.zp.guide_my_own.fragment.PlacesFragment;
 
@@ -28,7 +27,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +60,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             replaceContentView(new MapFragment(), R.string.map);
         }
+
     }
 
 
@@ -116,13 +115,17 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == CreatePlaceFragment.CAMERA_RQ) {
-                CreatePlaceFragment fragment = (CreatePlaceFragment)
-                        getSupportFragmentManager().findFragmentByTag(CreatePlaceFragment.class.getName());
+
+            if (data == null) {return;}
+            else if(requestCode == Camera2BasicFragment.RESULT_PATH) {
+                Camera2BasicFragment fragment = (Camera2BasicFragment) getSupportFragmentManager()
+                        .findFragmentByTag(Camera2BasicFragment.class.getName());
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -31,10 +32,11 @@ import java.util.Locale;
 
 import diploma.edu.zp.guide_my_own.DBHelper.FillDataBase;
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.activity.Camera2Activity;
 import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
+import diploma.edu.zp.guide_my_own.camera2.PhotoCamera2;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
-import diploma.edu.zp.guide_my_own.utils.DeleteFileByPath;
 
 /**
  * Created by Val on 2/16/2017.
@@ -51,11 +53,11 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     }
     public static final String COORDINATES = "COORDINATES";
     public static final String CURRENT_PATH = "CURRENT_PATH";
-    public final static int CAMERA_RQ = 6969;
+
     private String path;
-    private ImageView ivPicture;
-    private RelativeLayout rlPicture;
-    private TextView tvPlace;
+    public  ImageView ivPicture;
+    public  RelativeLayout rlPicture;
+    public  TextView tvPlace;
     private EditText etTitle, etDescr;
     private LatLng latLng;
 
@@ -78,11 +80,11 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         Button btnTakePicture = (Button) v.findViewById(R.id.btnTakePicture);
         btnTakePicture.setOnClickListener(this);
 
+        Button btnSave = (Button)v.findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(this);
+
         ivPicture = (ImageView) v.findViewById(R.id.ivPicture);
         rlPicture = (RelativeLayout) v.findViewById(R.id.rlPicture);
-
-        Button btnSave = (Button) v.findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(this);
 
         etTitle = (EditText) v.findViewById(R.id.etTitle);
         etDescr = (EditText) v.findViewById(R.id.etDescr);
@@ -108,51 +110,12 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnTakePicture) {
-                takePhoto();
+            Intent intent = new Intent(getActivity(), Camera2Activity.class);
+            startActivityForResult(intent, 1888);
         } else if (view.getId() == R.id.btnSave) {
             fillDB();
         }
     }
-
-    private void takePhoto() {
-
-        Camera2BasicFragment camera2BasicFragment = new Camera2BasicFragment();
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_main,camera2BasicFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-       /* File saveDir = null;
-
-        final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
-
-        try {
-            saveDir = new File(fullPath[0]);
-            if (!saveDir.exists()) {
-                Log.e("dir mk dir", String.valueOf(saveDir.mkdirs()));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (saveDir != null) {
-            MaterialCamera materialCamera = new MaterialCamera(getActivity())
-                    .saveDir(saveDir)
-                    .autoSubmit(false)
-                    .showPortraitWarning(false)
-                    .defaultToFrontFacing(false)
-                    .allowRetry(true)
-                    .labelRetry(R.string.retry)
-                    .primaryColor(ContextCompat.getColor(getContext(), R.color.white))
-                    .maxAllowedFileSize(1024 * 2)
-                    .qualityProfile(MaterialCamera.QUALITY_480P)
-                    .labelConfirm(R.string.use_photo)
-                    .stillShot().labelConfirm(R.string.use_photo);
-
-            materialCamera.start(CAMERA_RQ);
-        }*/
-    }
-
 
     private void fillDB() {
         if (etTitle.getText().toString().length() > 1) {
@@ -235,19 +198,14 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         }
     }
 
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == CAMERA_RQ && data != null) {
-            if (path != null) {
-                DeleteFileByPath.deleteFile(path);
-            }
-
-            path = data.getData().getPath();
+        if(resultCode == Camera2BasicFragment.RESULT_PATH){
+            path = data.getStringExtra(Camera2BasicFragment.NAME_A_PATH);
             setImage();
         }
+
     }
+
 
     @Override
     public void onDestroy() {
@@ -259,7 +217,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         super.onDestroy();
     }
 
-    private void setImage() {
+    public void setImage() {
         BitmapFactory.Options bounds = new BitmapFactory.Options();
         bounds.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, bounds);
@@ -271,4 +229,5 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         ivPicture.setImageBitmap(bm);
         tvPlace.setText(getPlaceName().get(0));
     }
+
 }
