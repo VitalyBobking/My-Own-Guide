@@ -112,7 +112,9 @@
         </activity>
 
 
-
+        <provider android:authorities="com.facebook.app.FacebookContentProvider{@string/facebook_app_id}"
+                android:name="com.facebook.FacebookContentProvider"
+                android:exported="true"/>
 
     </application>
 

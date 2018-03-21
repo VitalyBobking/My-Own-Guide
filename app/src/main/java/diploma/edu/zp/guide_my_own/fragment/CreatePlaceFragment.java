@@ -77,17 +77,17 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
 
         latLng = getArguments().getParcelable(COORDINATES);
 
-        Button btnTakePicture = (Button) v.findViewById(R.id.btnTakePicture);
+        Button btnTakePicture =  v.findViewById(R.id.btnTakePicture);
         btnTakePicture.setOnClickListener(this);
 
-        Button btnSave = (Button)v.findViewById(R.id.btnSave);
+        Button btnSave = v.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(this);
 
-        ivPicture = (ImageView) v.findViewById(R.id.ivPicture);
-        rlPicture = (RelativeLayout) v.findViewById(R.id.rlPicture);
+        ivPicture =  v.findViewById(R.id.ivPicture);
+        rlPicture =  v.findViewById(R.id.rlPicture);
 
-        etTitle = (EditText) v.findViewById(R.id.etTitle);
-        etDescr = (EditText) v.findViewById(R.id.etDescr);
+        etTitle =  v.findViewById(R.id.etTitle);
+        etDescr =  v.findViewById(R.id.etDescr);
         etTitle.setOnClickListener(this);
         etDescr.setOnClickListener(this);
 
@@ -98,7 +98,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
             return false;
         });
 
-        tvPlace = (TextView) v.findViewById(R.id.tvPlace);
+        tvPlace =  v.findViewById(R.id.tvPlace);
 
         if (path != null) {
             setImage();

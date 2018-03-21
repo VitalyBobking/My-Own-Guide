@@ -14,12 +14,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
+
 
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
-import diploma.edu.zp.guide_my_own.camera2.PhotoCamera2;
+import diploma.edu.zp.guide_my_own.fragment.FbFragment;
 import diploma.edu.zp.guide_my_own.fragment.MapFragment;
 import diploma.edu.zp.guide_my_own.fragment.PlacesFragment;
 
@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity
                 .setAction("Action", null).show());*/
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState != null) {
@@ -61,7 +62,10 @@ public class MainActivity extends AppCompatActivity
             replaceContentView(new MapFragment(), R.string.map);
         }
 
+
+
     }
+
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -74,9 +78,11 @@ public class MainActivity extends AppCompatActivity
             replaceContentView(new MapFragment(), R.string.map);
         } else if (id == R.id.nav_my_places) {
             replaceContentView(new PlacesFragment(), R.string.my_places);
+        } else if (id == R.id.fb_login) {
+            replaceContentView(new FbFragment(),R.string.FB_Login);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -111,6 +117,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().putFragment(outState, CURRENT_FRAGMENT, fragment);
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -126,6 +133,8 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+
+
 
 
 }

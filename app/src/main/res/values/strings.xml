@@ -42,6 +42,7 @@
 
     <!-- MY PLACES -->
     <string name="my_places">My Places</string>
+    <string name="FB_Login">FB Login</string>
     <string name="no_places_defined">No places defined</string>
     <string name="delete">Delete</string>
     <string name="key_binding_default_toolbar_name">Modal-Toolbar-Title</string>

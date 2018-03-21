@@ -27,11 +27,8 @@ public class PhotoCamera2 extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_photo_camera2, container, false);
         ivPhoto =  v.findViewById(R.id.imagePhoto);
-
         args = getArguments();
         photo = args.getString(BUNDLE_DATA);
-
-
 
         if (photo != null ) {
             BitmapFactory.Options bounds = new BitmapFactory.Options();
