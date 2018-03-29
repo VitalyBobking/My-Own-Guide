@@ -49,8 +49,8 @@ public class PlacesFragment extends DialogToastFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_places, container, false);
 
-        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.recycler_view);
-        TextView empty_view = (TextView) v.findViewById(R.id.empty_view);
+        RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
+        TextView empty_view = v.findViewById(R.id.empty_view);
 
         List<Place> places = GetPlaces.getPlaces(getContext(), true, null);
 

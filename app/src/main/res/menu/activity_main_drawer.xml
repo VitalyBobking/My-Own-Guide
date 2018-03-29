@@ -10,12 +10,6 @@
             android:id="@+id/nav_my_places"
             android:icon="@drawable/ic_place_black_24dp"
             android:title="@string/my_places" />
-        <item
-            android:id="@+id/fb_login"
-            android:icon="@drawable/facebook"
-            android:title="FB Login"
-            />
-
     </group>
 
 </menu>

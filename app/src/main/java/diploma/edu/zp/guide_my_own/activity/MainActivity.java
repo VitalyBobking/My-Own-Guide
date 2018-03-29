@@ -15,11 +15,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
-import diploma.edu.zp.guide_my_own.fragment.FbFragment;
+import diploma.edu.zp.guide_my_own.fragment.DetailsFragment;
 import diploma.edu.zp.guide_my_own.fragment.MapFragment;
 import diploma.edu.zp.guide_my_own.fragment.PlacesFragment;
 
@@ -62,8 +60,6 @@ public class MainActivity extends AppCompatActivity
             replaceContentView(new MapFragment(), R.string.map);
         }
 
-
-
     }
 
 
@@ -78,8 +74,6 @@ public class MainActivity extends AppCompatActivity
             replaceContentView(new MapFragment(), R.string.map);
         } else if (id == R.id.nav_my_places) {
             replaceContentView(new PlacesFragment(), R.string.my_places);
-        } else if (id == R.id.fb_login) {
-            replaceContentView(new FbFragment(),R.string.FB_Login);
         }
 
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);

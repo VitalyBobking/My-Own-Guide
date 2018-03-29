@@ -164,13 +164,13 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             }
         });
 
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
+        CoordinatorLayout coordinatorLayout = view.findViewById(R.id.main_content);
         bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
 
-        tvTitle = (TextView) bottomSheet.findViewById(R.id.tvTitle);
-        tvAddress = (TextView) bottomSheet.findViewById(R.id.tvAddress);
-        ivClose = (ImageView) bottomSheet.findViewById(R.id.ivClose);
-        ivPhoto = (ImageView) bottomSheet.findViewById(R.id.ivPhoto);
+        tvTitle =  bottomSheet.findViewById(R.id.tvTitle);
+        tvAddress = bottomSheet.findViewById(R.id.tvAddress);
+        ivClose = bottomSheet.findViewById(R.id.ivClose);
+        ivPhoto = bottomSheet.findViewById(R.id.ivPhoto);
 
         if (mPlace != null) {
             fillBottomSheet(mPlace);
@@ -347,7 +347,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     }
 
     private void getElementOfDialog(final Dialog dialog) {
-        Button btnDialogOk = (Button) dialog.findViewById(R.id.btnDialogOk);
+        Button btnDialogOk = dialog.findViewById(R.id.btnDialogOk);
 
         RadioButton rbNormal = (RadioButton) dialog.findViewById(R.id.rbNormal);
         RadioButton rbHybrid = (RadioButton) dialog.findViewById(R.id.rbHybrid);

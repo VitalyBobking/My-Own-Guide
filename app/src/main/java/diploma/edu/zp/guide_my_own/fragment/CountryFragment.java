@@ -52,8 +52,8 @@ public class CountryFragment extends DialogToastFragment {
 
         country = getArguments().getString(EXTRA_COUNTRY);
 
-        RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.recycler_view);
-        TextView empty_view = (TextView) v.findViewById(R.id.empty_view);
+        RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
+        TextView empty_view =  v.findViewById(R.id.empty_view);
 
         List<Place> places = GetPlaces.getPlaces(getContext(), true, country);
 

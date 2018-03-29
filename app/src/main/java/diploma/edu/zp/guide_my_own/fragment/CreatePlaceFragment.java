@@ -34,7 +34,6 @@ import diploma.edu.zp.guide_my_own.DBHelper.FillDataBase;
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.activity.Camera2Activity;
 import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
-import diploma.edu.zp.guide_my_own.camera2.PhotoCamera2;
 import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
 
@@ -205,7 +204,6 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         }
 
     }
-
 
     @Override
     public void onDestroy() {
