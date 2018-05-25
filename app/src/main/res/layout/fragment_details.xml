@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <ImageView
                 android:id="@+id/ivPhoto"
                 android:layout_width="match_parent"
@@ -26,12 +25,24 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop" />
 
+            <ImageView
+                android:id="@+id/ivPhotoEdit"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="115dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/camera_edit2"
+                android:textColor="@color/black"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivPhoto"
-                android:layout_margin="16dp"
+                android:layout_margin="16sp"
                 android:orientation="vertical">
 
                 <TextView
@@ -39,14 +50,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:visibility="visible" />
 
                 <TextView
                     android:id="@+id/tvPlaceName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:visibility="visible" />
+
+                <EditText
+                    android:id="@+id/etPlaceNameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:inputType="text"
+                    android:maxLines="2"
+                    android:theme="@style/MyEditText"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tvDescription"
@@ -54,9 +77,29 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </LinearLayout>
+                    android:textSize="16sp"
+                    android:visibility="visible" />
 
+                <EditText
+                    android:id="@+id/etDescriptionEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/description"
+                    android:lines="5"
+                    android:maxLines="5"
+                    android:textColor="@color/black"
+                    android:theme="@style/MyEditText"
+                    android:visibility="gone" />
+                <Button
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/btnSaveEdit"
+                    android:layout_gravity="center |bottom"
+                    android:textColor="@color/black"
+                    android:text="@string/save"
+                    android:visibility="gone" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -73,6 +116,7 @@
         fab:fab_addButtonPlusIconColor="@color/black"
         fab:fab_addButtonSize="mini"
         fab:fab_labelsPosition="right"
+        android:saveEnabled="false"
         fab:layout_anchor="@+id/scrollView2"
         fab:layout_anchorGravity="right|bottom">
 
@@ -113,8 +157,9 @@
         android:id="@+id/bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:clipToPadding="true"
         android:background="@color/white"
+        android:clipToPadding="true"
+        android:visibility="visible"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
 
@@ -128,8 +173,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/todo"
-                android:tint="@color/black"
-                android:src="@drawable/ic_close_white_24dp" />
+                android:src="@drawable/ic_close_white_24dp"
+                android:tint="@color/black" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -139,39 +184,28 @@
 
                 <ImageView
                     android:id="@+id/ivFaceBook"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/facebook" />
 
                 <ProgressBar
+                    android:id="@+id/progressBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/progressBar"
-                    android:layout_gravity="center"
-                    android:visibility="gone"/>
+                    android:layout_gravity="center_horizontal |center_vertical"
+                    android:visibility="gone" />
 
-                <ImageView
-                    android:id="@+id/ivInstagram"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="7dp"
-                    android:contentDescription="@string/todo"
-                    android:src="@drawable/instagram" />
             </LinearLayout>
 
-           <Button
-               android:id="@+id/logOut"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:background="#fff"
-               android:layout_alignParentBottom="true"
-               android:layout_centerHorizontal="true"
-               android:layout_gravity="bottom"
-               android:text="Log Out"
-               android:textStyle="italic"
-               android:textColor="@color/black"
-               android:visibility="gone"/>
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

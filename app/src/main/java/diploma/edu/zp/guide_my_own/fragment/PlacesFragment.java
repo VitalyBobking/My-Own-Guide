@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,11 +37,14 @@ public class PlacesFragment extends DialogToastFragment {
     }
 
     private PlacesAdapter adapter;
+    private List<Place> places;
+    private RecyclerView recyclerView;
+    private TextView empty_view;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getActivity().setTitle(R.string.my_places);
         setHasOptionsMenu(true);
     }
 
@@ -49,10 +53,10 @@ public class PlacesFragment extends DialogToastFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_places, container, false);
 
-        RecyclerView recyclerView = v.findViewById(R.id.recycler_view);
-        TextView empty_view = v.findViewById(R.id.empty_view);
+        recyclerView = v.findViewById(R.id.recycler_view);
+        empty_view = v.findViewById(R.id.empty_view);
 
-        List<Place> places = GetPlaces.getPlaces(getContext(), true, null);
+        places = GetPlaces.getPlaces(getContext(), true, null);
 
         initViews(recyclerView, places);
 
@@ -108,7 +112,7 @@ public class PlacesFragment extends DialogToastFragment {
             public void onNext(View view) {
                 Intent intent = new Intent(getActivity(), CountryActivity.class);
                 intent.putExtra(CountryFragment.EXTRA_COUNTRY, String.valueOf(((Place)view.getTag()).getCountry()));
-                startActivity(intent);
+                getActivity().startActivityForResult(intent, 12345);
             }
         });
 
@@ -124,7 +128,9 @@ public class PlacesFragment extends DialogToastFragment {
             @Override
             public void onNext(View view) {
                 Place p = (Place)view.getTag();
-                removeCountry(p.getCountry());
+                String country = p.getCountry();
+                removeCountry(country);
+                Log.e("country------>",country);
             }
         });
     }
@@ -134,9 +140,10 @@ public class PlacesFragment extends DialogToastFragment {
                 .setTitle(getString(R.string.you_sure))
                 .setMessage(getString(R.string.you_lose_this_place))
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    List<Integer> ids = DeletePlace.deleteCountry(getContext(), country);
-                    if (ids != null) {
-                        adapter.remove(country);
+
+                    if(country != null) {
+                        DeletePlace.deleteCountry(getContext(), country);
+                        updateAdapter();
                         showSuccess(getString(R.string.deleted_success));
                     } else {
                         showErrorDialog(getString(R.string.something_went_wrong));
@@ -148,4 +155,20 @@ public class PlacesFragment extends DialogToastFragment {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+    public void updateAdapter() {
+        places = GetPlaces.getPlaces(getContext(), true, null);
+        initViews(recyclerView,places);
+        emptyPlace();
+    }
+    private void emptyPlace() {
+        if (places.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            empty_view.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            empty_view.setVisibility(View.GONE);
+
+        }
+    }
+
 }

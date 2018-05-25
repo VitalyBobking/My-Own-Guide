@@ -2,9 +2,7 @@ package diploma.edu.zp.guide_my_own.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,16 +13,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
 import diploma.edu.zp.guide_my_own.R;
-import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
-import diploma.edu.zp.guide_my_own.fragment.DetailsFragment;
 import diploma.edu.zp.guide_my_own.fragment.MapFragment;
 import diploma.edu.zp.guide_my_own.fragment.PlacesFragment;
+
+import static android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
+    private boolean fragmentPopped;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,35 +34,37 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FragmentManager fm = getSupportFragmentManager();
+        fm.addOnBackStackChangedListener(() -> {
+            if(getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
+        });
+
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());*/
 
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close);
 
         drawer.addDrawerListener(toggle);
 
         toggle.syncState();
 
-
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (savedInstanceState != null) {
-            Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState, CURRENT_FRAGMENT);
-            replaceContentView(fragment, fragment.getTag(), fragment.getTag());
-        } else {
-            replaceContentView(new MapFragment(), R.string.map);
+           if(savedInstanceState == null) {
+               MapFragment fragment = new MapFragment();
+               FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+               ft.add(R.id.content_main, fragment,MapFragment.class.getName());
+               ft.addToBackStack(MapFragment.class.getName());
+               ft.setTransition(TRANSIT_FRAGMENT_FADE);
+               ft.commit();
+            }
         }
-
-    }
-
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -71,34 +73,29 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-            replaceContentView(new MapFragment(), R.string.map);
-        } else if (id == R.id.nav_my_places) {
-            replaceContentView(new PlacesFragment(), R.string.my_places);
-        }
+            MapFragment fragment = new MapFragment();
+            String backStateName = fragment.getClass().getName();
 
+            FragmentManager manager = getSupportFragmentManager();
+            fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+
+            if (!fragmentPopped){
+                FragmentTransaction ft = manager.beginTransaction();
+                ft.replace(R.id.content_main, fragment,backStateName);
+                ft.addToBackStack(backStateName);
+                ft.commit();
+            }
+        } else if (id == R.id.nav_my_places) {
+
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            PlacesFragment fragment = new PlacesFragment();
+            ft.replace(R.id.content_main, fragment);
+            ft.addToBackStack(PlacesFragment.class.getName());
+            ft.commit();
+        }
         DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void replaceContentView(Fragment fragment, @StringRes int toolbarNameResId){
-        String s = getResources().getString(toolbarNameResId);
-        replaceContentView(fragment , s, s);
-    }
-
-    private void replaceContentView(Fragment fragment, String toolbarName, String tag){
-        replaceFrameWithFragment(fragment, R.id.content_main, tag);
-        getSupportActionBar().setTitle(toolbarName);
-    }
-
-    private void replaceFrameWithFragment(Fragment fragment, @IdRes int contentFrame, String tag){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment temp = getSupportFragmentManager().findFragmentByTag(tag);
-        if (temp == null){
-            temp = fragment;
-        }
-        transaction.replace(contentFrame, temp, tag);
-        transaction.commit();
     }
 
     @Override
@@ -107,28 +104,27 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.content_main);
-        if (fragment != null)
+        if (fragment != null) {
             getSupportFragmentManager().putFragment(outState, CURRENT_FRAGMENT, fragment);
+        }
     }
 
-
-    @Override
+   @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-
-            if (data == null) {return;}
-            else if(requestCode == Camera2BasicFragment.RESULT_PATH) {
-                Camera2BasicFragment fragment = (Camera2BasicFragment) getSupportFragmentManager()
-                        .findFragmentByTag(Camera2BasicFragment.class.getName());
-                fragment.onActivityResult(requestCode, resultCode, data);
-            }
+             if(resultCode == 7777) {
+                FragmentManager fm = getSupportFragmentManager();
+                Fragment fragment = fm.findFragmentById(R.id.content_main);
+                if(fragment != null) {
+                    if(fragment instanceof PlacesFragment){
+                        ((PlacesFragment)fragment).updateAdapter();
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
+                }
+             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-
-
 }

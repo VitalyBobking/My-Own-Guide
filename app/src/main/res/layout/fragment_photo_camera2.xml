@@ -1,15 +1,29 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/photo_fragment"
+    android:background="@android:color/background_dark"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 
 
     <ImageView
         android:id="@+id/imagePhoto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/todo" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/todo"
+        android:fitsSystemWindows="false"
+         />
+
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        app:srcCompat="@drawable/ic_arrow_back_white_24dp"
+        android:contentDescription="TODO" />
 </RelativeLayout>
 

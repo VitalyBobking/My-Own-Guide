@@ -1,5 +1,6 @@
 package diploma.edu.zp.guide_my_own.DBHelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -53,13 +54,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static abstract class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME = "my_places";
-        static final String ID = "id";
-        static final String TITLE = "title";
-        static final String DESCRIPTION = "desc";
-        static final String URL_PIC = "url_pic";
+        public static final String ID = "id";
+        public static final String TITLE = "title";
+        public static final String DESCRIPTION = "desc";
+        public static final String URL_PIC = "url_pic";
         static final String LATITUDE = "lat";
         static final String LONGITUDE = "lon";
         public static final String PLACE = "place";
         public static final String COUNTRY = "country";
     }
+
 }

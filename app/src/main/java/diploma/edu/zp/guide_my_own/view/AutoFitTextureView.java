@@ -1,4 +1,4 @@
-package diploma.edu.zp.guide_my_own.camera2;
+package diploma.edu.zp.guide_my_own.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.TextureView;

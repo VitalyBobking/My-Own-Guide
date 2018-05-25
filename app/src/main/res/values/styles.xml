@@ -35,9 +35,10 @@
 
 
 
-    <style name="ToolBarStyle" parent="Theme.AppCompat.Light">
+    <style name="ToolBarStyle" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@android:color/transparent</item>
         <item name="windowActionBarOverlay">true</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white_24dp</item>
     </style>
 

@@ -1,21 +1,31 @@
 package diploma.edu.zp.guide_my_own.activity;
 
-
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.camera2.Camera2BasicFragment;
 import diploma.edu.zp.guide_my_own.fragment.CountryFragment;
+import diploma.edu.zp.guide_my_own.fragment.DetailsFragment;
+
 
 /**
  * Created by Val on 3/1/2017.
  */
 
-public class CountryActivity extends AppCompatActivity {
+public class CountryActivity extends AppCompatActivity implements DetailsFragment.ElementsUpdated {
     private static final String SAVED = "SAVED";
+    private boolean isWasEdited;
+
+    public void setWasEdited(boolean wasEdited) {
+        isWasEdited = wasEdited;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +40,12 @@ public class CountryActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(country);
         }
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
-            transaction.addToBackStack(null);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.country_main, CountryFragment.newInstance(country), CountryFragment.class.getName());
+            transaction.addToBackStack(CountryFragment.class.getName());
+            transaction.commit();
         }
-        transaction.add(R.id.country_main, CountryFragment.newInstance(country), CountryFragment.class.getName());
-        transaction.commit();
 
     }
 
@@ -48,15 +57,54 @@ public class CountryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-
-            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-                getSupportFragmentManager().popBackStack();
-            } else {
-                finish();
-            }
-        }
+        pressToHome();
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onBackPressed() {
+        pressToHome();
+        super.onBackPressed();
+    }
+
+    private void pressToHome () {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 1) {
+            fm.popBackStackImmediate();
+        } else {
+            finishActivity();
+            finish();
+
+        }
+    }
+    private void finishActivity() {
+        if(isWasEdited) {
+            Intent intent = new Intent();
+            intent.putExtra("name", true);
+            setResult(7777, intent);
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            if(resultCode == Camera2BasicFragment.RESULT_PATH | data != null) {
+                FragmentManager fm = getSupportFragmentManager();
+                Fragment fragment = fm.findFragmentByTag(DetailsFragment.class.getName());
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void elementSelected() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CountryFragment.class.getName());
+        if (fragment instanceof CountryFragment) {
+            ((CountryFragment)fragment).updateRecyclerView();
+        }
+    }
+
+
 }

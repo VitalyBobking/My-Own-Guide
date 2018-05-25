@@ -1,17 +1,18 @@
 package diploma.edu.zp.guide_my_own.fragment;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,8 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     }
     public static final String COORDINATES = "COORDINATES";
     public static final String CURRENT_PATH = "CURRENT_PATH";
+    public static final String LAT_LNG = "LAT_LNG";
+
 
     private String path;
     public  ImageView ivPicture;
@@ -59,23 +62,29 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     public  TextView tvPlace;
     private EditText etTitle, etDescr;
     private LatLng latLng;
-
+    private Place place;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle(R.string.map);
+        Log.e("onCreate","CreatePlaceFragment");
+
         if (savedInstanceState != null) {
             path = savedInstanceState.getString(CURRENT_PATH);
+            latLng = savedInstanceState.getParcelable(LAT_LNG);
         }
     }
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_create_place, container, false);
 
-        latLng = getArguments().getParcelable(COORDINATES);
-
+        if(getArguments() != null) {
+            latLng = getArguments().getParcelable(COORDINATES);
+        }
         Button btnTakePicture =  v.findViewById(R.id.btnTakePicture);
         btnTakePicture.setOnClickListener(this);
 
@@ -102,7 +111,6 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         if (path != null) {
             setImage();
         }
-
         return v;
     }
 
@@ -116,31 +124,32 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         }
     }
 
+
     private void fillDB() {
         if (etTitle.getText().toString().length() > 1) {
             long res = FillDataBase.fill(getActivity(), makePlace());
             if (res == -1) {
                 showErrorDialog(getString(R.string.something_went_wrong));
             } else {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment fragment = fragmentManager.findFragmentByTag(getString(R.string.map));
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                Fragment fragment = fm.findFragmentByTag(MapFragment.class.getName());
                 if (fragment instanceof MapFragment) {
                     ((MapFragment) fragment).done();
                 }
                 getActivity().getSupportFragmentManager().popBackStack();
-
             }
         } else {
             showErrorDialog(getString(R.string.enter_place_name));
         }
     }
 
+
     private Place makePlace() {
-        Place place = new Place();
+        place = new Place();
         place.setTitle(etTitle.getText().toString());
 
         if (etDescr.getText() != null)
-            place.setTitle(etDescr.getText().toString());
+            place.setDescription(etDescr.getText().toString());
 
         place.setLatitude(latLng.latitude);
         place.setLongitude(latLng.longitude);
@@ -171,7 +180,6 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
                     if (!is_code)
                         placeName += address0;
                 }
-
                 String address1 = address.getAddressLine(1);
                 if (address1 != null) {
                     boolean is_code = address1.matches("^-?\\d+$");
@@ -190,27 +198,12 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (path != null) {
-            outState.putString(CURRENT_PATH, path);
-        }
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == Camera2BasicFragment.RESULT_PATH){
-            path = data.getStringExtra(Camera2BasicFragment.NAME_A_PATH);
-            setImage();
-        }
-
-    }
-
-    @Override
     public void onDestroy() {
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            Log.e("onDestroy","CreatePlaceFragment");
         }
         super.onDestroy();
     }
@@ -226,6 +219,24 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         rlPicture.setVisibility(View.VISIBLE);
         ivPicture.setImageBitmap(bm);
         tvPlace.setText(getPlaceName().get(0));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (path != null) {
+            outState.putString(CURRENT_PATH, path);
+        }
+        if(latLng != null) {
+            outState.putParcelable(LAT_LNG, latLng);
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == Camera2BasicFragment.RESULT_PATH){
+            path = data.getStringExtra(Camera2BasicFragment.NAME_A_PATH);
+            setImage();
+        }
     }
 
 }

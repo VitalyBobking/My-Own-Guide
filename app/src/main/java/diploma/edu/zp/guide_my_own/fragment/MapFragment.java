@@ -23,6 +23,8 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -32,14 +34,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -115,22 +116,26 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getActivity().setTitle(R.string.map);
+        Log.e("onCreate","MapFragment");
 
         if (savedInstanceState != null) {
             mPlace = (Place) savedInstanceState.getSerializable(CURRENT_PLACE);
             currentZoom = savedInstanceState.getFloat(CURRENT_ZOOM);
         }
+
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        mapView = (MapView) view.findViewById(R.id.mapView);
+        mapView =  view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        rootLayout = (RelativeLayout) view.findViewById(R.id.rootLayout);
+        rootLayout =  view.findViewById(R.id.rootLayout);
 
         //Can add an animation
        /* ivBanner = (ImageView) view.findViewById(R.id.ivBanner);
@@ -142,8 +147,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         mFadeOutAnimation.setAnimationListener(animationFadeOutListener);
         ivBanner.startAnimation(mFadeInAnimation);
 
-
-
         closeAnimation.setOnClickListener(v -> {
 
             View myView = view.findViewById(R.id.relativeLayout);
@@ -153,7 +156,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         });*/
 
 
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab =  view.findViewById(R.id.fab);
         fab.setOnClickListener(view2 -> {
             Location loc = LocationService.getLastKnownLocation(getContext());
             if (loc != null) {
@@ -216,7 +219,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         return view;
     }
         // add Animation
-  /*  Animation.AnimationListener animationFadeOutListener = new Animation.AnimationListener() {
+   /* Animation.AnimationListener animationFadeOutListener = new Animation.AnimationListener() {
 
         @Override
         public void onAnimationEnd(Animation animation) {
@@ -251,14 +254,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         public void onAnimationStart(Animation animation) {
             // TODO Auto-generated method stub
         }
-    };*/
+    };
+*/
 
-
-
-
-
-
-    private void addMarkers() {
+    public void addMarkers() {
         if (markers == null) {
             markers = new ArrayList<>();
         }
@@ -349,10 +348,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     private void getElementOfDialog(final Dialog dialog) {
         Button btnDialogOk = dialog.findViewById(R.id.btnDialogOk);
 
-        RadioButton rbNormal = (RadioButton) dialog.findViewById(R.id.rbNormal);
-        RadioButton rbHybrid = (RadioButton) dialog.findViewById(R.id.rbHybrid);
-        RadioButton rbSatellite = (RadioButton) dialog.findViewById(R.id.rbSatellite);
-        RadioButton rbTerrain = (RadioButton) dialog.findViewById(R.id.rbTerrain);
+        RadioButton rbNormal =  dialog.findViewById(R.id.rbNormal);
+        RadioButton rbHybrid =  dialog.findViewById(R.id.rbHybrid);
+        RadioButton rbSatellite =  dialog.findViewById(R.id.rbSatellite);
+        RadioButton rbTerrain = dialog.findViewById(R.id.rbTerrain);
 
         RadioButton[] radioButtons = new RadioButton[]{rbNormal, rbSatellite, rbTerrain, rbHybrid};
 
@@ -363,9 +362,9 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
             }
         }
 
-        RadioGroup radioGroup = (RadioGroup) dialog.findViewById(R.id.radioGroup);
+        RadioGroup radioGroup =  dialog.findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            RadioButton rbChecked = (RadioButton) dialog.findViewById(checkedId);
+            RadioButton rbChecked = dialog.findViewById(checkedId);
             if (!rbChecked.getText().toString().equals(mapType)) {
                 mapType = rbChecked.getText().toString();
                 dialog.dismiss();
@@ -462,7 +461,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     public void onResume() {
         mapView.onResume();
         super.onResume();
-
         GuideMyOwn.startLocService();
     }
 
@@ -477,7 +475,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         super.onStop();
         GuideMyOwn.stopLocService();
     }
-
     @Override
     public void onDestroy() {
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
@@ -485,6 +482,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         }
         super.onDestroy();
         mapView.onDestroy();
+        Log.e("onDestroyView","MapFragment");
     }
 
     @Override
@@ -544,9 +542,11 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                             }
 
                             if (!showRationale) {
-                                startDialogOpenAppDetails(getString(R.string.permission_denied), getString(R.string.permissions_denied_message));
+                                startDialogOpenAppDetails(getString(R.string.permission_denied),
+                                        getString(R.string.permissions_denied_message));
                             } else if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permission)) {
-                                startDialogPermissionsDenied(getString(R.string.permission_denied), getString(R.string.permissions_denied_message));
+                                startDialogPermissionsDenied(getString(R.string.permission_denied),
+                                        getString(R.string.permissions_denied_message));
                             }
                         }
                     }
@@ -636,7 +636,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
 
     public void done() {
         showSuccess(getString(R.string.place_added_successful));
-        mGoogleMap.clear();
+        if(mGoogleMap != null) {
+            mGoogleMap.clear();
+            markers.clear();
+        }
         places = GetPlaces.getPlaces(getContext(), false, null);
         addMarkers();
     }
@@ -646,9 +649,10 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
                 .setTitle(getString(R.string.create_new_place))
                 .setMessage(getString(R.string.want_create_place))
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                     transaction.add(R.id.content_main, CreatePlaceFragment.newInstance(latLng), CreatePlaceFragment.class.getName());
-                    transaction.addToBackStack(null);
+                    transaction.addToBackStack(CreatePlaceFragment.class.getName());
                     transaction.commit();
                 }).setNegativeButton(android.R.string.no, (dialog, which) -> {
 
@@ -665,7 +669,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         fillBottomSheet(mPlace);
         mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED);
 
-        FloatingActionButton fab1 = (FloatingActionButton) bottomSheet.findViewById(R.id.fab1);
+        FloatingActionButton fab1 = bottomSheet.findViewById(R.id.fab1);
         fab1.setOnClickListener(view -> {
             mBottomSheetBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
 

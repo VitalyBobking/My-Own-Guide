@@ -28,6 +28,7 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -47,6 +48,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -62,9 +64,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import diploma.edu.zp.guide_my_own.R;
-import diploma.edu.zp.guide_my_own.activity.Camera2Activity;
 
+import diploma.edu.zp.guide_my_own.R;
+import diploma.edu.zp.guide_my_own.view.AutoFitTextureView;
 
 
 public  class Camera2BasicFragment extends Fragment
@@ -91,8 +93,10 @@ public  class Camera2BasicFragment extends Fragment
     private static final int MAX_PREVIEW_WIDTH = 1920;
     private static final int MAX_PREVIEW_HEIGHT = 1080;
 
-    public static final String NAME_A_PATH = "THE_GOOD_GAY";
+    public static final String NAME_A_PATH = "THE_GOOD_DAY";
     public static final int RESULT_PATH = 2854;
+    private static final String SAVE_PATH_FOR_IMAGE = "savePathImage";
+    private static final String BUTTON_ACTIVITY_CREATE = "buttonActivity";
 
     private HandlerThread mBackgroundThread;
     private Handler mBackgroundHandler;
@@ -118,6 +122,7 @@ public  class Camera2BasicFragment extends Fragment
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
     private boolean mFlashSupported;
     private int mSensorOrientation;
+
 
     private final TextureView.SurfaceTextureListener mSurfaceTextureListener
             = new TextureView.SurfaceTextureListener() {
@@ -147,25 +152,42 @@ public  class Camera2BasicFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_camera2_basic, container, false);
 
-        btnPicture = (Button) view.findViewById(R.id.picture);
-        btnSavePhoto = (Button)view.findViewById(R.id.btnSavePhoto);
-        btnTryAgain = (Button) view.findViewById(R.id.btnTryAgain);
+        btnPicture =  view.findViewById(R.id.picture);
+        btnSavePhoto = view.findViewById(R.id.btnSavePhoto);
+        btnTryAgain = view.findViewById(R.id.btnTryAgain);
+        ImageView btnHome = view.findViewById(R.id.btnHome);
 
         btnPicture.setOnClickListener(this);
         btnTryAgain.setOnClickListener(this);
         btnSavePhoto.setOnClickListener(this);
+
+
+        btnHome.setOnClickListener(v -> {
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() > 1) {
+                fm.popBackStackImmediate();
+                Fragment fragment = fm.findFragmentById(R.id.activity_camera2);
+                if(fragment != null && fragment instanceof Camera2BasicFragment) {
+                    invisibleButtons();
+                }
+            }  else {
+                getActivity().finish();
+            }
+        });
 
         return view;
     }
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTextureView = (AutoFitTextureView) view.findViewById(R.id.texture);
+        mTextureView = view.findViewById(R.id.texture);
     }
     private void buttonActivated() {
-        SharedPreferences sp = getActivity().getSharedPreferences(BUTTON_ACTIVITY, Context.MODE_PRIVATE);
+        SharedPreferences sp = getActivity()
+                .getSharedPreferences(BUTTON_ACTIVITY, Context.MODE_PRIVATE);
 
         if (isActivated == true) {
             SharedPreferences.Editor e = sp.edit();
@@ -181,22 +203,25 @@ public  class Camera2BasicFragment extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         if(savedInstanceState != null) {
-            isActivated = savedInstanceState.getBoolean("buttonActivity");
+            mFile = (File) savedInstanceState.getSerializable(SAVE_PATH_FOR_IMAGE);
+            isActivated = savedInstanceState.getBoolean(BUTTON_ACTIVITY_CREATE);
             buttonActivated();
         }
-
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         if(btnPicture.isShown()) {
-            outState.putBoolean("buttonActivity", true);
+            outState.putBoolean(BUTTON_ACTIVITY_CREATE, true);
             buttonActivated();
         }
-
-
+        if (mFile != null) {
+            outState.putSerializable(SAVE_PATH_FOR_IMAGE, mFile);
+        }
     }
 
     private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
@@ -231,7 +256,8 @@ public  class Camera2BasicFragment extends Fragment
     };
 
 
-    private final ImageReader.OnImageAvailableListener mOnImageAvailableListener = new ImageReader.OnImageAvailableListener() {
+    private final ImageReader.OnImageAvailableListener mOnImageAvailableListener =
+            new ImageReader.OnImageAvailableListener() {
 
         @Override
         public void onImageAvailable(ImageReader reader) {
@@ -275,7 +301,7 @@ public  class Camera2BasicFragment extends Fragment
 
         File saveDir = null;
         final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
-
+        //final String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath().toString() + "/Guide_My_Own";
         try {
             saveDir = new File(fullPath[0]);
             if (!saveDir.exists()) {
@@ -288,7 +314,7 @@ public  class Camera2BasicFragment extends Fragment
         if (saveDir != null) {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File mediaFile;
-            mediaFile = new File(saveDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
+            mediaFile = new File(saveDir.getAbsolutePath() + File.separator + "IMG_" + timeStamp + ".jpg");
             return mediaFile;
         }
         return saveDir;
@@ -313,8 +339,6 @@ public  class Camera2BasicFragment extends Fragment
         ft.addToBackStack(null);
         ft.commit();
     }
-
-
 
     private CameraCaptureSession.CaptureCallback mCaptureCallback
             = new CameraCaptureSession.CaptureCallback() {
@@ -428,7 +452,6 @@ public  class Camera2BasicFragment extends Fragment
         } else {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
         }
-
     }
 
 
@@ -480,7 +503,7 @@ public  class Camera2BasicFragment extends Fragment
 
                 Size largest = Collections.max(Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)), new CompareSizesByArea());
                 mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
-                        ImageFormat.JPEG, 2);
+                        ImageFormat.JPEG, 1);
                 mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
 
                 int displayRotation = activity.getWindowManager().getDefaultDisplay().getRotation();
@@ -724,7 +747,6 @@ public  class Camera2BasicFragment extends Fragment
                         visibilityButtons();
                         startFragment();
                     });
-                    Log.e("onCaptureCompleted", "onCaptureCompleted");
                 }
             };
 
@@ -745,11 +767,9 @@ public  class Camera2BasicFragment extends Fragment
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
             setAutoFlash(mPreviewRequestBuilder);
-            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
-                    mBackgroundHandler);
+            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback, mBackgroundHandler);
             mState = STATE_PREVIEW;
-            mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
-                    mBackgroundHandler);
+            mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -786,12 +806,12 @@ public  class Camera2BasicFragment extends Fragment
         if(pathPhoto != null) {
             Intent intent = new Intent();
             intent.putExtra(NAME_A_PATH,pathPhoto);
-            Log.e("----------photo",pathPhoto);
+            Log.e("savePhoto------------->",pathPhoto);
             getActivity().setResult(RESULT_PATH,intent);
             getActivity().finish();
-
         }
     }
+
     public void removeFragment(){
 
         invisibleButtons();

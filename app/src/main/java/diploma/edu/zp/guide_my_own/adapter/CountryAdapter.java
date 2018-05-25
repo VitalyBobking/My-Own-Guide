@@ -1,6 +1,8 @@
 package diploma.edu.zp.guide_my_own.adapter;
 
-import android.graphics.Bitmap;
+
+import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +17,7 @@ import java.util.List;
 
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.model.Place;
-import diploma.edu.zp.guide_my_own.utils.CreateBitmapFromPath;
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 /**
@@ -57,17 +55,23 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Place place = places.get(position);
-        holder.tvCategory.setText(place.getPlaceName());
 
+       // holder.itemView.setTag(position);
+         place.setPosition(position);
+        //    holder.tvCategory.setText(Integer.toString(position+1));
+        holder.tvCategory.setText(String.valueOf(place.getPlaceName()));
         holder.itemView.setTag(place);
-
         String path = place.getUrl_pic();
 
         if (path != null) {
             ImageLoader.getInstance().displayImage("file:///"+path, holder.ivPicture);
         }
+    }
+    public void updateData(List<Place> place) {
+        places.clear();
+        places.addAll(place);
     }
 
     @Override
@@ -81,14 +85,15 @@ public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.MyViewHo
 
         MyViewHolder(View view) {
             super(view);
-            tvCategory = (TextView) view.findViewById(R.id.tvCategory);
-            ivPicture = (ImageView) view.findViewById(R.id.ivPicture);
+            tvCategory =  view.findViewById(R.id.tvCategory);
+            ivPicture = view.findViewById(R.id.ivPicture);
         }
     }
 
     public void remove(int position) {
         places.remove(position);
         notifyItemRemoved(position);
+
     }
 
     public CountryAdapter(List<Place> places) {

@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
     tools:context="diploma.edu.zp.guide_my_own.activity.Camera2Activity">
 
 </FrameLayout>

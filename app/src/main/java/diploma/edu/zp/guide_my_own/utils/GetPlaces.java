@@ -1,8 +1,10 @@
 package diploma.edu.zp.guide_my_own.utils;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import diploma.edu.zp.guide_my_own.model.Place;
  */
 
 public class GetPlaces {
+
     public static List<Place> getPlaces(Context context, boolean is_group_by, String where) {
         DBHelper dbHelper = null;
         SQLiteDatabase db = null;
@@ -47,6 +50,7 @@ public class GetPlaces {
 
                     places.add(place);
                 } while (cursor.moveToNext());
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,5 +66,44 @@ public class GetPlaces {
         }
 
         return places;
+
+
     }
+    public static void updateDataBase (String id, String title, String desc, String url_pic, Context context) {
+        DBHelper dbHelper = null;
+        SQLiteDatabase db = null;
+        String whereClause = "_id = ?";
+        String[] whereArgs = new String[] {"" + id };
+
+        try {
+            dbHelper = new DBHelper(context);
+            db = dbHelper.getReadableDatabase();
+
+            ContentValues cv = new ContentValues();
+
+            if(title != null) {
+                cv.put("title", title);
+            }
+            if(desc != null) {
+                cv.put("desc", desc);
+            }
+            if(url_pic != null) {
+                cv.put("url_pic",url_pic);
+            }
+
+            int count = db.update("my_places", cv, whereClause,whereArgs);
+            Log.e("DB", String.valueOf(count));
+
+        } catch (Exception e) {
+            e.getMessage();
+        } finally {
+            if (db != null)
+                db.close();
+
+            if (dbHelper != null)
+                dbHelper.close();
+        }
+
+    }
+
 }

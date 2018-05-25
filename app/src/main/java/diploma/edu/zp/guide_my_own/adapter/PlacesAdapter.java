@@ -6,12 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.jakewharton.rxbinding.view.RxView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.List;
-
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.model.Place;
 import rx.Observable;
@@ -77,8 +74,8 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
 
         MyViewHolder(View view) {
             super(view);
-            tvCategory = (TextView) view.findViewById(R.id.tvCategory);
-            ivPicture = (ImageView) view.findViewById(R.id.ivPicture);
+            tvCategory = view.findViewById(R.id.tvCategory);
+            ivPicture = view.findViewById(R.id.ivPicture);
         }
     }
 

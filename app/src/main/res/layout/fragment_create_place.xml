@@ -24,7 +24,8 @@
                 android:layout_height="300dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true"
-                android:scaleType="centerInside" android:contentDescription="TODO"/>
+                android:scaleType="centerInside"
+                android:contentDescription="TODO"/>
             <TextView
                 android:id="@+id/tvPlace"
                 android:background="@drawable/round_background"

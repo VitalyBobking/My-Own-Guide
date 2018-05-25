@@ -118,9 +118,10 @@ public class AlertDialogFragment extends DialogFragment {
         try {
             FragmentTransaction ft = manager.beginTransaction();
             ft.add(this, tag);
-            ft.commit();
+            ft.commitAllowingStateLoss();
         } catch (IllegalStateException e) {
             Log.e("ABSDIALOGFRA", e.toString());
         }
     }
+
 }
