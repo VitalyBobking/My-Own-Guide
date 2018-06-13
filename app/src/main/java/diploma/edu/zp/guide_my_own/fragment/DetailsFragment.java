@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -14,9 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +65,7 @@ public class DetailsFragment extends Fragment {
     public static final String EXTRA_ITEM = "EXTRA_ITEM";
     public static final String SAVE_STATE_PLACE = "SAVE_STATE_PLACE";
     public static final String RESULT_REGISTER = "REGISTER_IN_FACEBOOK";
+    private static final String SHOW_PHOTO_AFTER_EDIT = "SHOW_PHOTO_AFTER_EDIT";
     final String BUTTON_OUT_ACTIVITY = "SAVED_BUTTON_OUT_STATE";
     private Place mPlace;
     private BottomSheetBehavior mBottomSheetBehavior;
@@ -78,8 +78,13 @@ public class DetailsFragment extends Fragment {
     private SharePhotoContent content;
     private String photoEdit;
     private ActionBar actionBar;
-
-
+    private Toast toast;
+    private boolean isEditPhoto;
+    private TextView tvTitle,tvDescription,tvPlaceName;
+    private EditText etDescriptionEdit,etPlaceNameEdit;
+    private Button btnSaveEdit;
+    private Bitmap bm;
+    private RelativeLayout rlPhotoEdit;
 
     private CallbackManager callbackManager;
     private static final String EMAIL = "email";
@@ -97,10 +102,6 @@ public class DetailsFragment extends Fragment {
     public interface ElementsUpdated {
         void elementSelected();
     }
-
-
-
-
 
     @Override
     public void onAttach(Context context) {
@@ -120,8 +121,9 @@ public class DetailsFragment extends Fragment {
         } else {
             mPlace = (Place) savedInstanceState.get(SAVE_STATE_PLACE);
         }
-
     }
+
+
 
     @Nullable
     @Override
@@ -130,16 +132,18 @@ public class DetailsFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_details, container, false);
 
+        rlPhotoEdit = v.findViewById(R.id.rlPhotoEdit);
+        toast = Toast.makeText(getContext(), "", Toast.LENGTH_SHORT);
         ivPhoto = v.findViewById(R.id.ivPhoto);
         ivPhotoEdit = v.findViewById(R.id.ivPhotoEdit);
         ivFacebook = v.findViewById(R.id.ivFaceBook);
         ImageView ivCloseBottomSheet = v.findViewById(R.id.ivCloseBottomSheet);
 
-        TextView tvTitle = v.findViewById(R.id.tvTitle);
-        TextView tvDescription = v.findViewById(R.id.tvDescription);
-        EditText etDescriptionEdit = v.findViewById(R.id.etDescriptionEdit);
-        TextView tvPlaceName = v.findViewById(R.id.tvPlaceName);
-        EditText etPlaceNameEdit = v.findViewById(R.id.etPlaceNameEdit);
+        tvTitle = v.findViewById(R.id.tvTitle);
+        tvDescription = v.findViewById(R.id.tvDescription);
+        etDescriptionEdit = v.findViewById(R.id.etDescriptionEdit);
+        tvPlaceName = v.findViewById(R.id.tvPlaceName);
+        etPlaceNameEdit = v.findViewById(R.id.etPlaceNameEdit);
 
         View bottomSheet  = v.findViewById(R.id.bottomSheet);
 
@@ -148,7 +152,7 @@ public class DetailsFragment extends Fragment {
         FloatingActionButton fabEdit = v.findViewById(R.id.fabEdit);
         FloatingActionButton fabDelete = v.findViewById(R.id.fabDelete);
 
-        Button btnSaveEdit = v.findViewById(R.id.btnSaveEdit);
+        btnSaveEdit = v.findViewById(R.id.btnSaveEdit);
 
         loginButton =  v.findViewById(R.id.login_button);
         progressBar = v.findViewById(R.id.progressBar);
@@ -160,17 +164,23 @@ public class DetailsFragment extends Fragment {
         loginButton.setFragment(this);
         loginButton.setReadPermissions(Arrays.asList(EMAIL, USER_NAME));
 
+
+        if(savedInstanceState != null) {
+            photoEdit = savedInstanceState.getString("photoEdit");
+            if(photoEdit == null) {
+                ImageLoader.getInstance().displayImage("file:///" + mPlace.getUrl_pic(), ivPhoto);
+            } else {
+                saveImagePhotoEdited();
+            }
+        } else {
+            ImageLoader.getInstance().displayImage("file:///" + mPlace.getUrl_pic(), ivPhoto);
+        }
+
         ivFacebook.setOnClickListener(v12 -> {
             if(AccessToken.getCurrentAccessToken() != null) {
                 sharePhotoToFacebook();
             } else {
-                setViewVisibility(ivFacebook,View.INVISIBLE);
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "please register",
-                        Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-
+                showToastText("please register");
             }
         });
 
@@ -192,20 +202,15 @@ public class DetailsFragment extends Fragment {
 
         fabDelete.setOnClickListener(v16 -> {
             DeletePlace.delete(getContext(),mPlace.getId());
-             elementsUpdated.elementSelected();
+
+            elementsUpdated.elementSelected();
+
             ((CountryActivity)getActivity()).setWasEdited(true);
 
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    R.string.deleted_success,
-                    Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-
+            showToastText(getString(R.string.deleted_success));
             getActivity().getSupportFragmentManager().popBackStackImmediate();
 
         });
-
-
         ivPhotoEdit.setOnClickListener(v15 -> {
             Intent intent = new Intent(getActivity(), Camera2Activity.class);
             startActivityForResult(intent, 2018);
@@ -215,17 +220,9 @@ public class DetailsFragment extends Fragment {
              if(etPlaceNameEdit.getText().toString().length() > 1) {
                 tvTitle.setText(etPlaceNameEdit.getText().toString());
                 actionBar.setTitle(etPlaceNameEdit.getText().toString());
-
                 tvDescription.setText(etDescriptionEdit.getText().toString());
 
-                setViewVisibility(tvTitle,View.VISIBLE);
-                setViewVisibility(tvDescription,View.VISIBLE);
-                setViewVisibility(tvPlaceName,View.VISIBLE);
-
-                setViewVisibility(etDescriptionEdit,View.GONE);
-                setViewVisibility(etPlaceNameEdit,View.GONE);
-                setViewVisibility(ivPhotoEdit,View.GONE);
-                setViewVisibility(btnSaveEdit,View.GONE);
+                visibilitySaveView();
 
                 GetPlaces.updateDataBase(String.valueOf(mPlace.getId()),
                         String.valueOf(etPlaceNameEdit.getText()),
@@ -233,45 +230,28 @@ public class DetailsFragment extends Fragment {
                         photoEdit,getContext());
 
                  elementsUpdated.elementSelected();
-
                  ((CountryActivity)getActivity()).setWasEdited(true);
-                 fabMenu.toggle();
-                 Toast toast = Toast.makeText(getApplicationContext(),
-                         "editing was successful",
-                         Toast.LENGTH_SHORT);
-                 toast.setGravity(Gravity.CENTER, 0, 0);
-                 toast.show();
+                 showToastText("editing was successful");
              } else {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        R.string.enter_place_name,
-                        Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+                 showToastText(getString(R.string.enter_place_name));
              }
         });
 
         fabEdit.setOnClickListener(v13 -> {
-
-            setViewVisibility(tvTitle,View.GONE);
-            setViewVisibility(tvDescription,View.GONE);
-            setViewVisibility(tvPlaceName,View.GONE);
-
-            setViewVisibility(etDescriptionEdit,View.VISIBLE);
-            setViewVisibility(etPlaceNameEdit,View.VISIBLE);
-            setViewVisibility(ivPhotoEdit,View.VISIBLE);
-            setViewVisibility(btnSaveEdit,View.VISIBLE);
-
+            visibilityEditView();
             fabMenu.toggle();
 
             if(mPlace.getTitle() != null | mPlace.getDescription() != null) {
                 etPlaceNameEdit.setText(mPlace.getTitle());
                 etDescriptionEdit.setText(mPlace.getDescription());
             }
-
-
         });
 
         fabShare.setOnClickListener(v1 -> {
+
+            if(AccessToken.getCurrentAccessToken() == null) {
+                setViewVisibility(ivFacebook,View.INVISIBLE);
+            }
 
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             setViewVisibility(fabMenu,View.INVISIBLE);
@@ -294,11 +274,7 @@ public class DetailsFragment extends Fragment {
 
                     if(loginResult.getAccessToken().getUserId() != null) {
                         setViewVisibility(ivFacebook,View.VISIBLE);
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                "you have successfully registered",
-                                Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
+                        showToastText("you have successfully registered");
 
                         setViewVisibility(loginButton, View.INVISIBLE);
                         setViewVisibility(ivFacebook, View.INVISIBLE);
@@ -310,26 +286,16 @@ public class DetailsFragment extends Fragment {
                 }
                 @Override
                 public void onCancel() {
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "You canceled",Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
+                    showToastText("You canceled");
                 }
 
                 @Override
                 public void onError(FacebookException exception) {
                     isOnline();
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            exception.getMessage(), Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.BOTTOM, 0, 0);
-                    toast.show();
+                    showToastText(String.valueOf(exception.getMessage()));
                 }
         });
 
-        //ivPhoto.setImageBitmap(CreateBitmapFromPath.loadImage(mPlace.getUrl_pic()));
-        if (mPlace.getUrl_pic() != null) {
-            ImageLoader.getInstance().displayImage("file:///"+mPlace.getUrl_pic(), ivPhoto);
-        }
         tvTitle.setText(mPlace.getTitle());
 
         String desc = mPlace.getDescription();
@@ -350,15 +316,27 @@ public class DetailsFragment extends Fragment {
         setViewVisibility(ivFacebook,View.GONE);
         progressBarVisibility(View.VISIBLE);
 
-            bitmap = ((BitmapDrawable) ivPhoto.getDrawable()).getBitmap();
-            SharePhoto photo = new SharePhoto.Builder()
-                    .setBitmap(bitmap)
-                    .build();
+        try {
+                bitmap = ((BitmapDrawable) ivPhoto.getDrawable()).getBitmap();
+                SharePhoto photo = new SharePhoto.Builder()
+                        .setBitmap(bitmap)
+                        .build();
 
-            content = new SharePhotoContent.Builder()
-                    .addPhoto(photo)
-                    .build();
-
+                content = new SharePhotoContent.Builder()
+                        .addPhoto(photo)
+                        .build();
+        }
+        catch (Exception e) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Alert!")
+                    .setMessage("Please take a picture")
+                    .setCancelable(false)
+                    .setNegativeButton("Ok",
+                            (dialog, id) -> dialog.cancel());
+            AlertDialog alert = builder.create();
+            alert.show();
+            Log.e("sharePhotoToFacebook",String.valueOf(e.getMessage()));
+        }
         ShareApi.share(content, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
@@ -377,12 +355,7 @@ public class DetailsFragment extends Fragment {
 
             @Override
             public void onCancel() {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "You canceled",
-                        Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, 0);
-                toast.show();
-
+                showToastText("You canceled");
                 progressBarVisibility(View.GONE);
                 setViewVisibility(loginButton,View.VISIBLE);
             }
@@ -391,12 +364,7 @@ public class DetailsFragment extends Fragment {
             public void onError(FacebookException error) {
 
                 isOnline();
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        error.getMessage(),
-                        Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.BOTTOM, 0, 0);
-                toast.show();
-
+                showToastText(String.valueOf(error.getMessage()));
                 progressBarVisibility(View.VISIBLE);
                 setViewVisibility(loginButton,View.VISIBLE);
                 Log.e("onError ---->", String.valueOf(error.getMessage()));
@@ -409,11 +377,7 @@ public class DetailsFragment extends Fragment {
         ConnectivityManager cm = (ConnectivityManager)
                 getActivity().getSystemService(cs);
         if (cm.getActiveNetworkInfo() == null) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "No internet connection",
-                    Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.BOTTOM, 0, 0);
-            toast.show();
+            showToastText("No internet connection");
             return false;
         } else {
             return true;
@@ -442,10 +406,19 @@ public class DetailsFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable(SAVE_STATE_PLACE, mPlace);
+
+        if(photoEdit != null) {
+            outState.putString("photoEdit", photoEdit);
+        }
         if(loginButton.isShown()) {
             outState.putBoolean("btnOutVisibility", true);
         }
+        if(ivPhotoEdit.isShown()) {
+            outState.putBoolean(SHOW_PHOTO_AFTER_EDIT, true);
+        }
+
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -454,7 +427,12 @@ public class DetailsFragment extends Fragment {
         if(savedInstanceState != null) {
             btnOutIsActivated = savedInstanceState.getBoolean("button_out_activated");
             buttonOutIsActivated();
+
+            isEditPhoto = savedInstanceState.getBoolean(SHOW_PHOTO_AFTER_EDIT);
+            photoEdit = savedInstanceState.getString("photoEdit");
+            showPhotoEdit();
         }
+
     }
     private void buttonOutIsActivated() {
         SharedPreferences sp = getActivity().getSharedPreferences(BUTTON_OUT_ACTIVITY, Context.MODE_PRIVATE);
@@ -469,6 +447,7 @@ public class DetailsFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -480,13 +459,41 @@ public class DetailsFragment extends Fragment {
             }
 
     }
-    private void saveImagePhotoEdited() {
-        BitmapFactory.Options bounds = new BitmapFactory.Options();
-        bounds.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(photoEdit, bounds);
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        Bitmap bm = BitmapFactory.decodeFile(photoEdit, opts);
-        ivPhoto.setImageBitmap(bm);
+    public void saveImagePhotoEdited() {
+        ImageLoader.getInstance().displayImage("file:///" +photoEdit, ivPhoto);
+    }
+    private void showPhotoEdit() {
+
+        if (isEditPhoto) {
+            visibilityEditView();
+        } else {
+            visibilitySaveView();
+        }
+    }
+    private void visibilityEditView() {
+        setViewVisibility(tvTitle,View.GONE);
+        setViewVisibility(tvDescription,View.GONE);
+        setViewVisibility(tvPlaceName,View.GONE);
+
+        setViewVisibility(etDescriptionEdit,View.VISIBLE);
+        setViewVisibility(etPlaceNameEdit,View.VISIBLE);
+        setViewVisibility(btnSaveEdit,View.VISIBLE);
+        setViewVisibility(rlPhotoEdit,View.VISIBLE);
+    }
+    private void visibilitySaveView() {
+        setViewVisibility(tvTitle,View.VISIBLE);
+        setViewVisibility(tvDescription,View.VISIBLE);
+        setViewVisibility(tvPlaceName,View.VISIBLE);
+
+        setViewVisibility(etDescriptionEdit,View.GONE);
+        setViewVisibility(etPlaceNameEdit,View.GONE);
+        setViewVisibility(rlPhotoEdit,View.GONE);
+        setViewVisibility(btnSaveEdit,View.GONE);
+    }
+    private void showToastText(String message) {
+        toast.setText(message);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
     }
 
 }
