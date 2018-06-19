@@ -37,7 +37,7 @@ public class PhotoCamera2 extends Fragment {
         if (photo != null ) {
             saveImagePhoto();
         } else {
-            Log.e("------->Unfortunately", photo);
+            Log.e("Unfortunately", String.valueOf(photo));
 
         }
 

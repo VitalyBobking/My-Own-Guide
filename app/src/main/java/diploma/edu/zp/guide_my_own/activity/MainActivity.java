@@ -1,6 +1,7 @@
 package diploma.edu.zp.guide_my_own.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import diploma.edu.zp.guide_my_own.R;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String CURRENT_FRAGMENT = "CURRENT_FRAGMENT";
     private boolean fragmentPopped;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +42,17 @@ public class MainActivity extends AppCompatActivity
             if(getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
         });
 
+        if(savedInstanceState != null) {
+            fragmentPopped = savedInstanceState.getBoolean("fragmentPopped");
+        }
+
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());*/
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open,
                     R.string.navigation_drawer_close);
 
@@ -65,6 +72,12 @@ public class MainActivity extends AppCompatActivity
                ft.commit();
             }
         }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        toggle.onConfigurationChanged(newConfig);
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -107,6 +120,7 @@ public class MainActivity extends AppCompatActivity
         if (fragment != null) {
             getSupportFragmentManager().putFragment(outState, CURRENT_FRAGMENT, fragment);
         }
+        outState.putBoolean("fragmentPopped",true);
     }
 
    @Override

@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -27,12 +28,14 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -76,6 +79,9 @@ public  class Camera2BasicFragment extends Fragment
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     public static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
+
+
+    public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -149,6 +155,7 @@ public  class Camera2BasicFragment extends Fragment
     };
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -163,7 +170,6 @@ public  class Camera2BasicFragment extends Fragment
         btnPicture.setOnClickListener(this);
         btnTryAgain.setOnClickListener(this);
         btnSavePhoto.setOnClickListener(this);
-
 
         btnHome.setOnClickListener(v -> {
             FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -189,10 +195,10 @@ public  class Camera2BasicFragment extends Fragment
         SharedPreferences sp = getActivity()
                 .getSharedPreferences(BUTTON_ACTIVITY, Context.MODE_PRIVATE);
 
-        if (isActivated == true) {
+        if (isActivated) {
             SharedPreferences.Editor e = sp.edit();
             e.putBoolean("buttonIsActivated", true);
-            e.commit();
+            e.apply();
             invisibleButtons();
         } else {
             visibilityButtons();
@@ -277,6 +283,7 @@ public  class Camera2BasicFragment extends Fragment
 
 
         public void saveToSDCard(byte[] bytes) {
+
             mFile = getOutputMediaFile();
             OutputStream outputStream = null;
             try {
@@ -300,10 +307,10 @@ public  class Camera2BasicFragment extends Fragment
     public File getOutputMediaFile() {
 
         File saveDir = null;
-        final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
-        //final String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath().toString() + "/Guide_My_Own";
+       // final String[] fullPath = {getContext().getFilesDir().getAbsolutePath()};
+        final String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/my_own_guide/photo";
         try {
-            saveDir = new File(fullPath[0]);
+            saveDir = new File(fullPath);
             if (!saveDir.exists()) {
                 Log.e("dir mk dir", String.valueOf(saveDir.mkdirs()));
             }
@@ -470,16 +477,38 @@ public  class Camera2BasicFragment extends Fragment
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+       /* if (requestCode == REQUEST_CAMERA_PERMISSION ) {
+            if ((grantResults.length != 1) || (grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
                 ErrorDialog.newInstance(getString(R.string.request_permission))
                         .show(getChildFragmentManager(), FRAGMENT_DIALOG);
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }*/
+        switch (requestCode) {
+            case PERMISSIONS_MULTIPLE_REQUEST:
+                if (grantResults.length > 0) {
+                    boolean cameraPermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraPermission && readExternalFile) {
+                        checkPermission();
+                    } else {
+                        Snackbar.make(getActivity().findViewById(android.R.id.content),
+                                "Please Grant Permissions to upload profile photo",
+                                Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                                v -> requestPermissions(
+                                        new String[]{Manifest.permission
+                                                .READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                                        PERMISSIONS_MULTIPLE_REQUEST)).show();
+                    }
+                } else {
+                    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                }
         }
     }
 
@@ -571,10 +600,12 @@ public  class Camera2BasicFragment extends Fragment
 
 
     private void openCamera(int width, int height) {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestCameraPermission();
+       if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+           // requestCameraPermission();
+           checkAndroidVersion();
             return;
         }
+
         setUpCameraOutputs(width, height);
         configureTransform(width, height);
         Activity activity = getActivity();
@@ -793,6 +824,7 @@ public  class Camera2BasicFragment extends Fragment
 
     public void takePicture() {
         try {
+
             mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,CameraMetadata.CONTROL_AF_TRIGGER_START);
             mState = STATE_WAITING_LOCK;
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback, mBackgroundHandler);
@@ -897,6 +929,36 @@ public  class Camera2BasicFragment extends Fragment
                                     activity.finish();
                                 }
                             }).create();
+        }
+    }
+    private void checkAndroidVersion() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkPermission();
+        }
+    }
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
+                .checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale
+                    (getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale
+                            (getActivity(), Manifest.permission.CAMERA)) {
+
+                Snackbar.make(getActivity().findViewById(android.R.id.content),
+                        "Please Grant Permissions to upload profile photo",
+                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                        v -> requestPermissions(
+                                new String[]{Manifest.permission
+                                        .WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                                PERMISSIONS_MULTIPLE_REQUEST)).show();
+            } else {
+                requestPermissions(
+                        new String[]{Manifest.permission
+                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                        PERMISSIONS_MULTIPLE_REQUEST);
+            }
         }
     }
 

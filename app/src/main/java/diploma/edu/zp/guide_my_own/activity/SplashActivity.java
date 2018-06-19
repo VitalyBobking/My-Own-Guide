@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -21,6 +23,9 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Crashlytics.log("Hello Crash");
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         this.finish();
@@ -35,9 +40,9 @@ public class SplashActivity extends AppCompatActivity {
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException e) {
-
+            Log.e("NameNotFound",String.valueOf(e.getMessage()));
         } catch (NoSuchAlgorithmException e) {
-
+            Log.e("NoSuchAlgorithm",String.valueOf(e.getMessage()));
         }
     }
 }

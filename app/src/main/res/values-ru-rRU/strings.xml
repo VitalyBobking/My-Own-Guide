@@ -13,6 +13,16 @@
     <string name="map_satellite">Спутник</string>
     <string name="map_terrain">Ландшафт</string>
 
+    <string name="picture">Изображение</string>
+    <string name="description_info">Инфо</string>
+    <string name="request_permission">Этот образец требует разрешения</string>
+    <string name="request_permission_sd">Для этого образца требуется разрешение sd-карты.</string>
+    <string name="camera_error">Это устройство не поддерживает API Camera2</string>
+    <string name="intro_message">Вступительное сообщение</string>
+    <string name="hello_blank_fragment">Привет пустой фрагмент</string>
+    <string name="todo">Делать</string>
+    <string name="repeat">Повторить</string>
+    <string name="Camera">Камера</string>
     <string name="map">Карта</string>
     <string name="im_sure">Я уверен</string>
     <string name="retry">Повторить</string>
@@ -63,4 +73,24 @@
     <string name="you_sure">Вы уверены?</string>
     <string name="you_lose_this_place">Вы потеряете это место</string>
     <string name="deleted_success">Место было успешно удалено</string>
+
+    <!--facebook-->
+
+    <string name="place_name">Укажите имя</string>
+    <string name="please_register">Пожалуйста зарегестрируйтесь</string>
+    <string name="editing_was_successful">Редактирование было успешным</string>
+    <string name="you_canceled">Вы отменили</string>
+    <string name="you_shared_the_photo">вы поделились фотографией</string>
+
+    <!--toast-->
+    <string name="please_take_a_picture">"Пожалуйста сделайте фото"</string>
+    <string name="no_internet_connection">"Нет интернет соединения"</string>
+
+    <string name="facebook_app_id">1841994936099181</string>
+    <string name="fb_login_protocol_scheme">fb1841994936099181</string>
+    <string name="fabric_api_key">78773a9f8e6c8b7ff532eedabadf412e08f4d21b</string>
+    <string name="FB_Login">Войти в FB</string>
+    <string name="save">Cохранить</string>
+    <string name="try_again">Повторить попытку</string>
+
 </resources>

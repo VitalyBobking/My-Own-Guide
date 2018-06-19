@@ -180,7 +180,7 @@ public class DetailsFragment extends Fragment {
             if(AccessToken.getCurrentAccessToken() != null) {
                 sharePhotoToFacebook();
             } else {
-                showToastText("please register");
+                showToastText(getString(R.string.please_register));
             }
         });
 
@@ -231,7 +231,7 @@ public class DetailsFragment extends Fragment {
 
                  elementsUpdated.elementSelected();
                  ((CountryActivity)getActivity()).setWasEdited(true);
-                 showToastText("editing was successful");
+                 showToastText(getString(R.string.editing_was_successful));
              } else {
                  showToastText(getString(R.string.enter_place_name));
              }
@@ -286,7 +286,7 @@ public class DetailsFragment extends Fragment {
                 }
                 @Override
                 public void onCancel() {
-                    showToastText("You canceled");
+                    showToastText(getString(R.string.you_canceled));
                 }
 
                 @Override
@@ -329,7 +329,7 @@ public class DetailsFragment extends Fragment {
         catch (Exception e) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Alert!")
-                    .setMessage("Please take a picture")
+                    .setMessage(getString(R.string.please_take_a_picture))
                     .setCancelable(false)
                     .setNegativeButton("Ok",
                             (dialog, id) -> dialog.cancel());
@@ -345,7 +345,7 @@ public class DetailsFragment extends Fragment {
                 setViewVisibility(loginButton,View.VISIBLE);
 
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "You shared the photo",
+                            getString(R.string.you_shared_the_photo),
                             Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.BOTTOM, 0, 0);
                     toast.show();
@@ -355,7 +355,7 @@ public class DetailsFragment extends Fragment {
 
             @Override
             public void onCancel() {
-                showToastText("You canceled");
+                showToastText(getString(R.string.you_canceled));
                 progressBarVisibility(View.GONE);
                 setViewVisibility(loginButton,View.VISIBLE);
             }
@@ -377,7 +377,7 @@ public class DetailsFragment extends Fragment {
         ConnectivityManager cm = (ConnectivityManager)
                 getActivity().getSystemService(cs);
         if (cm.getActiveNetworkInfo() == null) {
-            showToastText("No internet connection");
+            showToastText(getString(R.string.no_internet_connection));
             return false;
         } else {
             return true;

@@ -22,20 +22,24 @@
                 android:id="@+id/ivPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:adjustViewBounds="true"
                 android:scaleType="centerCrop" />
 
-            <ImageView
-                android:id="@+id/ivPhotoEdit"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="115dp"
-                android:adjustViewBounds="true"
-                android:background="@drawable/camera_edit2"
-                android:textColor="@color/black"
-                android:visibility="gone" />
+            <RelativeLayout
+                android:id="@+id/rlPhotoEdit"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@color/black_semi_transparent"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/ivPhotoEdit"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerInParent="true"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_menu_camera"
+                    android:tint="@color/background" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -109,27 +113,24 @@
         android:id="@+id/fabMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
+        android:saveEnabled="false"
         fab:fab_addButtonColorNormal="@color/white"
         fab:fab_addButtonColorPressed="@color/colorPrimary"
         fab:fab_addButtonPlusIconColor="@color/black"
-        fab:fab_addButtonSize="mini"
         fab:fab_labelsPosition="right"
-        android:saveEnabled="false"
-        fab:layout_anchor="@+id/scrollView2"
-        fab:layout_anchorGravity="right|bottom">
+        fab:fab_addButtonSize="mini"
+        android:layout_gravity="end|bottom">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_anchor="@+id/bottomSheet"
+            app:layout_anchorGravity="top|end"
             fab:fab_colorNormal="@color/white"
             fab:fab_colorPressed="@color/colorPrimary"
             fab:fab_icon="@drawable/ic_share_black_24dp"
-            fab:fab_title="Share"
-            app:layout_anchor="@+id/bottomSheet"
-            app:layout_anchorGravity="top|end" />
+            fab:fab_title="Share" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabEdit"
@@ -166,6 +167,7 @@
         <RelativeLayout
             android:id="@+id/rlBottom"
             android:layout_width="match_parent"
+            android:background="@color/black_semi_transparent"
             android:layout_height="150dp">
 
             <ImageView
@@ -174,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/todo"
                 android:src="@drawable/ic_close_white_24dp"
-                android:tint="@color/black" />
+                />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -184,8 +186,8 @@
 
                 <ImageView
                     android:id="@+id/ivFaceBook"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/facebook" />
 
@@ -194,6 +196,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal |center_vertical"
+                    android:indeterminate="true"
+                    android:indeterminateTintMode="src_atop"
+                    android:indeterminateTint="@color/white"
                     android:visibility="gone" />
 
             </LinearLayout>

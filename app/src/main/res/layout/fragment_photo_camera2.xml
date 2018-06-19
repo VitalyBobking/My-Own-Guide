@@ -9,9 +9,8 @@
     <ImageView
         android:id="@+id/imagePhoto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
         android:adjustViewBounds="true"
         android:contentDescription="@string/todo"
         android:fitsSystemWindows="false"

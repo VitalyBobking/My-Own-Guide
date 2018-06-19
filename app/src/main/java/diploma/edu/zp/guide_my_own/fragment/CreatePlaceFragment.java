@@ -126,7 +126,7 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
 
 
     private void fillDB() {
-        if (etTitle.getText().toString().length() > 1) {
+        if (etTitle.getText().toString().length() > 1 ) {
             long res = FillDataBase.fill(getActivity(), makePlace());
             if (res == -1) {
                 showErrorDialog(getString(R.string.something_went_wrong));
@@ -234,7 +234,8 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Camera2BasicFragment.RESULT_PATH){
-            path = data.getStringExtra(Camera2BasicFragment.NAME_A_PATH);
+            path = data.getExtras().getString(Camera2BasicFragment.NAME_A_PATH);
+            Log.e("onActivityResult->",String.valueOf(path));
             setImage();
         }
     }

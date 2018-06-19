@@ -9,8 +9,10 @@
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>
     <string name="request_permission">This sample needs camera permission.</string>
+    <string name="request_permission_sd">This sample needs sd card permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
-    <string name="intro_message" />
+    <string name="intro_message">Introductory message</string>
+
 
     <!-- Map -->
     <string name="choose_map_type">Choose Map Type</string>
@@ -69,16 +71,26 @@
     <string name="you_lose_this_place">You\'ll lose this place</string>
     <string name="deleted_success">Place was deleted successfully</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="save">save</string>
     <string name="todo">TODO</string>
     <string name="repeat">repeat</string>
     <string name="Camera">Camera</string>
-    <string name="try_again">TRY AGAIN</string>
+    <string name="try_again">Try Again</string>
 
-    <!--facebook-->
+
     <string name="facebook_app_id">1841994936099181</string>
     <string name="fb_login_protocol_scheme">fb1841994936099181</string>
+    <string name="fabric_api_key">78773a9f8e6c8b7ff532eedabadf412e08f4d21b</string>
     <string name="place_name">Place name</string>
+    <string name="please_register">Please register</string>
+    <string name="editing_was_successful">editing was successful</string>
+    <string name="you_canceled">You canceled</string>
+    <string name="you_shared_the_photo">You shared the photo</string>
+
+    <!--toast-->
+    <string name="please_take_a_picture">"Please take a picture"</string>
+    <string name="no_internet_connection">"No internet connection"</string>
+
 </resources>

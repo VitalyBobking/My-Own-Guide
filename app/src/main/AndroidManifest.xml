@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="diploma.edu.zp.guide_my_own">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -11,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
-    <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
@@ -107,7 +108,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/fb_login_protocol_scheme" />
+                <data android:scheme="@string/fb_login_protocol_scheme"
+                    tools:ignore="ManifestResource" />
             </intent-filter>
         </activity>
 
@@ -116,6 +118,9 @@
                 android:name="com.facebook.FacebookContentProvider"
                 android:exported="true"/>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="78773a9f8e6c8b7ff532eedabadf412e08f4d21b" />
     </application>
 
 

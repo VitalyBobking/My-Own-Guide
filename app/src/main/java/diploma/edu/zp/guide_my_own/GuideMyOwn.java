@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -14,6 +16,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import diploma.edu.zp.guide_my_own.service.LocationService;
 import diploma.edu.zp.guide_my_own.service.RetrofitApi;
 import diploma.edu.zp.guide_my_own.service.ServiceGenerator;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Val on 2/17/2017.
@@ -29,6 +32,18 @@ public class GuideMyOwn extends Application {
     public void onCreate() {
         super.onCreate();
         context = this;
+
+        final Fabric fabric = new Fabric.Builder(this)
+                .kits(new Crashlytics())
+                .debuggable(true)
+                .build();
+        Fabric.with(fabric);
+
+        Crashlytics.setUserName("Vitaly");
+        Crashlytics.setUserEmail("bobking.vitaly.1987@gmail.com");
+        Crashlytics.setUserIdentifier("19872107");
+
+
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .resetViewBeforeLoading(true)

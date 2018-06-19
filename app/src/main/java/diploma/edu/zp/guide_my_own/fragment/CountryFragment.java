@@ -153,7 +153,6 @@ public class CountryFragment extends DialogToastFragment {
                     if (isSuccess) {
                         ((CountryActivity)getActivity()).setWasEdited(true);
 
-
                         places.remove(position);
                         recyclerView.removeViewAt(position);
                         adapter.notifyItemRemoved(position);
@@ -174,9 +173,12 @@ public class CountryFragment extends DialogToastFragment {
     }
 
     public void updateRecyclerView() {
-        places = GetPlaces.getPlaces(getContext(), true, country);
-        adapter.notifyDataSetChanged();
-        isEmptyPlace();
+        if(places != null) {
+            places = GetPlaces.getPlaces(getContext(), true, country);
+            adapter.notifyDataSetChanged();
+            isEmptyPlace();
+        }
+
     }
     private void isEmptyPlace() {
         if (places.isEmpty()) {

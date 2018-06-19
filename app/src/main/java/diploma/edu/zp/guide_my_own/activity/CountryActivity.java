@@ -62,8 +62,8 @@ public class CountryActivity extends AppCompatActivity implements DetailsFragmen
     }
     @Override
     public void onBackPressed() {
-        pressToHome();
         super.onBackPressed();
+        pressToHome();
     }
 
     private void pressToHome () {
@@ -73,7 +73,6 @@ public class CountryActivity extends AppCompatActivity implements DetailsFragmen
         } else {
             finishActivity();
             finish();
-
         }
     }
     private void finishActivity() {
@@ -81,20 +80,6 @@ public class CountryActivity extends AppCompatActivity implements DetailsFragmen
             Intent intent = new Intent();
             intent.putExtra("name", true);
             setResult(7777, intent);
-        }
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        try {
-            if(resultCode == Camera2BasicFragment.RESULT_PATH | data != null) {
-                FragmentManager fm = getSupportFragmentManager();
-                Fragment fragment = fm.findFragmentByTag(DetailsFragment.class.getName());
-                fragment.onActivityResult(requestCode, resultCode, data);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
