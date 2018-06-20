@@ -2,9 +2,7 @@ package diploma.edu.zp.guide_my_own.model;
 
 import java.io.Serializable;
 
-/**
- * Created by Val on 2/17/2017.
- */
+
 
 public class Place implements Serializable {
     private int id;

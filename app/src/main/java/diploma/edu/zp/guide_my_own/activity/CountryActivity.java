@@ -15,9 +15,7 @@ import diploma.edu.zp.guide_my_own.fragment.CountryFragment;
 import diploma.edu.zp.guide_my_own.fragment.DetailsFragment;
 
 
-/**
- * Created by Val on 3/1/2017.
- */
+
 
 public class CountryActivity extends AppCompatActivity implements DetailsFragment.ElementsUpdated {
     private static final String SAVED = "SAVED";

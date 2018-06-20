@@ -5,9 +5,7 @@ import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import rx.Observable;
 
-/**
- * Created by Val on 3/2/2017.
- */
+
 
 public interface RetrofitApi {
     @GET("json")

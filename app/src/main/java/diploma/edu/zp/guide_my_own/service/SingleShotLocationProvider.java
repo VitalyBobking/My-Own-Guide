@@ -11,9 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-/**
- * Created by Val on 2/10/2017.
- */
 
 public class SingleShotLocationProvider{
     public interface LocationCallback {

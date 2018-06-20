@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by valera on 3/5/17.
- */
+
 
 public class PathJSONParser {
 

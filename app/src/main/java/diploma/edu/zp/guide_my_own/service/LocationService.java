@@ -27,9 +27,7 @@ import diploma.edu.zp.guide_my_own.fragment.MapFragment;
 
 import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 
-/**
- * Created by Val on 2/10/2017.
- */
+
 
 public class LocationService extends Service implements
         GoogleApiClient.ConnectionCallbacks,

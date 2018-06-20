@@ -137,7 +137,6 @@ public class CountryFragment extends DialogToastFragment {
                 Place p = (Place)view.getTag();
                 int position = (p.getPosition());
                 removeDialog(p.getId(), position);
-                Log.e("------------>",String.valueOf(position));
             }
         });
     }
@@ -147,7 +146,7 @@ public class CountryFragment extends DialogToastFragment {
                 .setTitle(getString(R.string.you_sure))
                 .setMessage(getString(R.string.you_lose_this_place))
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                  //  List<String> arr = Arrays.asList(ids.split(","));
+
                     boolean isSuccess = DeletePlace.delete(getContext(),ids);
 
                     if (isSuccess) {

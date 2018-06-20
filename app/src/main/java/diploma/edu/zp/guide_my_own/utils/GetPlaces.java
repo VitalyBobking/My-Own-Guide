@@ -13,10 +13,6 @@ import diploma.edu.zp.guide_my_own.DBHelper.DBHelper;
 import diploma.edu.zp.guide_my_own.DBHelper.PlaceScheme;
 import diploma.edu.zp.guide_my_own.model.Place;
 
-/**
- * Created by valera on 2/18/17.
- */
-
 public class GetPlaces {
 
     public static List<Place> getPlaces(Context context, boolean is_group_by, String where) {

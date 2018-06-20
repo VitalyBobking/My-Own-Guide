@@ -482,7 +482,6 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
         }
         super.onDestroy();
         mapView.onDestroy();
-        Log.e("onDestroyView","MapFragment");
     }
 
     @Override
@@ -720,7 +719,7 @@ public class MapFragment extends DialogToastFragment implements OnMapReadyCallba
     }
 
     private PolylineOptions createPolylinePoints(List<List<HashMap<String, String>>> routes) {
-        ArrayList<LatLng> points = null;
+        ArrayList<LatLng> points;
         PolylineOptions polyLineOptions = null;
 
         for (int i = 0; i < routes.size(); i++) {

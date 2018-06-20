@@ -16,7 +16,8 @@
     <string name="picture">Изображение</string>
     <string name="description_info">Инфо</string>
     <string name="request_permission">Этот образец требует разрешения</string>
-    <string name="request_permission_sd">Для этого образца требуется разрешение sd-карты.</string>
+    <string name="request_permission_sd">Для этого образца требуется разрешение sd-карты</string>
+    <string name="upload_profile_photo">Предоставьте разрешение на загрузку фотографии профиля</string>
     <string name="camera_error">Это устройство не поддерживает API Camera2</string>
     <string name="intro_message">Вступительное сообщение</string>
     <string name="hello_blank_fragment">Привет пустой фрагмент</string>
@@ -66,13 +67,14 @@
     <string name="place_added_successful">Место добавлено успешно!</string>
     <string name="km"> км</string>
     <string name="m"> м</string>
-    <string name="wait_loc_gotten">Пожалуйста подождите пока Ваше местоположение будет
-        получено</string>
+    <string name="wait_loc_gotten">Пожалуйста подождите пока Ваше местоположение будет получено</string>
     <string name="something_went_wrong">Что то пошло не так</string>
     <string name="enter_place_name">Пожалуйста введите название места</string>
     <string name="you_sure">Вы уверены?</string>
     <string name="you_lose_this_place">Вы потеряете это место</string>
     <string name="deleted_success">Место было успешно удалено</string>
+    <string name="ENABLE">Включить</string>
+    <string name="Failed">Не удалось</string>
 
     <!--facebook-->
 
@@ -80,7 +82,8 @@
     <string name="please_register">Пожалуйста зарегестрируйтесь</string>
     <string name="editing_was_successful">Редактирование было успешным</string>
     <string name="you_canceled">Вы отменили</string>
-    <string name="you_shared_the_photo">вы поделились фотографией</string>
+    <string name="you_shared_the_photo">Вы поделились фотографией</string>
+    <string name="you_have_successfully_registered">Вы успешно зарегистрировались</string>
 
     <!--toast-->
     <string name="please_take_a_picture">"Пожалуйста сделайте фото"</string>

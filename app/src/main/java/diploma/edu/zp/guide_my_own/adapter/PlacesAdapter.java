@@ -14,9 +14,7 @@ import diploma.edu.zp.guide_my_own.model.Place;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-/**
- * Created by Val on 2/17/2017.
- */
+
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHolder> {
     private PublishSubject<View> mViewClickSubject = PublishSubject.create();

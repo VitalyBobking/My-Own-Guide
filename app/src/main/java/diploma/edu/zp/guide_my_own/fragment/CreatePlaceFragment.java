@@ -68,7 +68,6 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(R.string.map);
-        Log.e("onCreate","CreatePlaceFragment");
 
         if (savedInstanceState != null) {
             path = savedInstanceState.getString(CURRENT_PATH);
@@ -203,7 +202,6 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            Log.e("onDestroy","CreatePlaceFragment");
         }
         super.onDestroy();
     }
@@ -235,7 +233,6 @@ public class CreatePlaceFragment extends DialogToastFragment implements View.OnC
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == Camera2BasicFragment.RESULT_PATH){
             path = data.getExtras().getString(Camera2BasicFragment.NAME_A_PATH);
-            Log.e("onActivityResult->",String.valueOf(path));
             setImage();
         }
     }

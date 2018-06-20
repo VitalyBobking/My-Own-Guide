@@ -56,15 +56,10 @@ import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-/**
- * Created by Val on 3/6/2017.
- */
-
 public class DetailsFragment extends Fragment {
 
     public static final String EXTRA_ITEM = "EXTRA_ITEM";
     public static final String SAVE_STATE_PLACE = "SAVE_STATE_PLACE";
-    public static final String RESULT_REGISTER = "REGISTER_IN_FACEBOOK";
     private static final String SHOW_PHOTO_AFTER_EDIT = "SHOW_PHOTO_AFTER_EDIT";
     final String BUTTON_OUT_ACTIVITY = "SAVED_BUTTON_OUT_STATE";
     private Place mPlace;
@@ -274,7 +269,7 @@ public class DetailsFragment extends Fragment {
 
                     if(loginResult.getAccessToken().getUserId() != null) {
                         setViewVisibility(ivFacebook,View.VISIBLE);
-                        showToastText("you have successfully registered");
+                        showToastText(getString(R.string.you_have_successfully_registered));
 
                         setViewVisibility(loginButton, View.INVISIBLE);
                         setViewVisibility(ivFacebook, View.INVISIBLE);
@@ -328,7 +323,7 @@ public class DetailsFragment extends Fragment {
         }
         catch (Exception e) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Alert!")
+            builder.setTitle(getString(R.string.alert))
                     .setMessage(getString(R.string.please_take_a_picture))
                     .setCancelable(false)
                     .setNegativeButton("Ok",

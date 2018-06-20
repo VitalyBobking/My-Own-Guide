@@ -27,9 +27,6 @@ import diploma.edu.zp.guide_my_own.model.Place;
 import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 import rx.Subscriber;
 
-/**
- * Created by Val on 2/17/2017.
- */
 
 public class PlacesFragment extends DialogToastFragment {
     public PlacesFragment() {
@@ -130,7 +127,6 @@ public class PlacesFragment extends DialogToastFragment {
                 Place p = (Place)view.getTag();
                 String country = p.getCountry();
                 removeCountry(country);
-                Log.e("country------>",country);
             }
         });
     }

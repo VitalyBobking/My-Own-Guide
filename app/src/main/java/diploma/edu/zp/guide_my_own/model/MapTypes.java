@@ -1,8 +1,6 @@
 package diploma.edu.zp.guide_my_own.model;
 
-/**
- * Created by Val on 3/6/2017.
- */
+
 
 public class MapTypes {
     public static final String NORMAL = "Normal";

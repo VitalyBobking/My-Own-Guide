@@ -15,16 +15,12 @@ import com.crashlytics.android.Crashlytics;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Created by valera on 4/25/17.
- */
+
 
 public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Crashlytics.log("Hello Crash");
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

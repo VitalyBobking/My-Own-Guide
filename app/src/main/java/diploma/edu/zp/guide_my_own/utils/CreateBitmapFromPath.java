@@ -9,9 +9,6 @@ import java.io.FileNotFoundException;
 
 import rx.Observable;
 
-/**
- * Created by Val on 2/28/2017.
- */
 
 public class CreateBitmapFromPath {
     public static Observable<Bitmap> loadImage(String path) {

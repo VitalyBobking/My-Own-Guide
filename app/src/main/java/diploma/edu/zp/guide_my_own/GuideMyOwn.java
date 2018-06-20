@@ -18,9 +18,6 @@ import diploma.edu.zp.guide_my_own.service.RetrofitApi;
 import diploma.edu.zp.guide_my_own.service.ServiceGenerator;
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Created by Val on 2/17/2017.
- */
 
 public class GuideMyOwn extends Application {
     private static final String GOOGLE_MAP_API = "https://maps.googleapis.com/maps/api/directions/";

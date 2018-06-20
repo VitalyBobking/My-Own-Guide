@@ -187,7 +187,7 @@ public  class Camera2BasicFragment extends Fragment
         return view;
     }
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTextureView = view.findViewById(R.id.texture);
     }
@@ -218,7 +218,7 @@ public  class Camera2BasicFragment extends Fragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         if(btnPicture.isShown()) {
@@ -469,26 +469,11 @@ public  class Camera2BasicFragment extends Fragment
         super.onPause();
     }
 
-    private void requestCameraPermission() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-            new ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
-        } else {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        }
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-       /* if (requestCode == REQUEST_CAMERA_PERMISSION ) {
-            if ((grantResults.length != 1) || (grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
-                ErrorDialog.newInstance(getString(R.string.request_permission))
-                        .show(getChildFragmentManager(), FRAGMENT_DIALOG);
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }*/
+
         switch (requestCode) {
             case PERMISSIONS_MULTIPLE_REQUEST:
                 if (grantResults.length > 0) {
@@ -499,8 +484,8 @@ public  class Camera2BasicFragment extends Fragment
                         checkPermission();
                     } else {
                         Snackbar.make(getActivity().findViewById(android.R.id.content),
-                                "Please Grant Permissions to upload profile photo",
-                                Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                                getString(R.string.upload_profile_photo),
+                                Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.ENABLE),
                                 v -> requestPermissions(
                                         new String[]{Manifest.permission
                                                 .READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
@@ -696,7 +681,7 @@ public  class Camera2BasicFragment extends Fragment
                         @Override
                         public void onConfigureFailed(
                                 @NonNull CameraCaptureSession cameraCaptureSession) {
-                            showToast("Failed");
+                            showToast(getString(R.string.Failed));
                         }
                     }, null
             );
@@ -947,8 +932,8 @@ public  class Camera2BasicFragment extends Fragment
                             (getActivity(), Manifest.permission.CAMERA)) {
 
                 Snackbar.make(getActivity().findViewById(android.R.id.content),
-                        "Please Grant Permissions to upload profile photo",
-                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                        getString(R.string.upload_profile_photo),
+                        Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.ENABLE),
                         v -> requestPermissions(
                                 new String[]{Manifest.permission
                                         .WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},

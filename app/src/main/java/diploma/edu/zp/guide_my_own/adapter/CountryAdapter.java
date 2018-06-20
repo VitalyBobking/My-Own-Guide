@@ -1,7 +1,7 @@
 package diploma.edu.zp.guide_my_own.adapter;
 
 
-import android.annotation.SuppressLint;
+
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,9 +20,7 @@ import diploma.edu.zp.guide_my_own.model.Place;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-/**
- * Created by Val on 2/24/2017.
- */
+
 
 public class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.MyViewHolder> {
 

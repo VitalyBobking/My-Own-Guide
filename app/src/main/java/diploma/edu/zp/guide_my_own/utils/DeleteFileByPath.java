@@ -5,9 +5,6 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by Val on 2/16/2017.
- */
 
 public class DeleteFileByPath {
     public static void deleteFile(String path) {
