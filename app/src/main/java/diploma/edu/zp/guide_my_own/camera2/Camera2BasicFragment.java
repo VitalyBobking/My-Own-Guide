@@ -70,7 +70,9 @@ import java.util.concurrent.TimeUnit;
 
 import diploma.edu.zp.guide_my_own.R;
 import diploma.edu.zp.guide_my_own.view.AutoFitTextureView;
-
+/*
+ *created by Vitaly
+ */
 
 public  class Camera2BasicFragment extends Fragment
         implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
