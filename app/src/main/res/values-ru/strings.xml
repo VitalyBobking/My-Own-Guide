@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">guide-my-own</string>
+    <string name="app_name">Мой персональный гид</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Открыть навигационную понель</string>
+    <string name="navigation_drawer_close">Закрыть навигационную понель</string>
 
     <string name="map_type">Тип карты</string>
 
@@ -94,6 +94,6 @@
     <string name="fabric_api_key">78773a9f8e6c8b7ff532eedabadf412e08f4d21b</string>
     <string name="FB_Login">Войти в FB</string>
     <string name="save">Cохранить</string>
-    <string name="try_again">Повторить попытку</string>
+    <string name="try_again">Повторить</string>
 
 </resources>

@@ -27,10 +27,6 @@ public class Camera2Activity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_camera2);
 
-
-       /* getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);*/
-
         if (savedInstanceState == null) {
             ft = getSupportFragmentManager().beginTransaction();
             fragment = new Camera2BasicFragment();

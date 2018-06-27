@@ -3,7 +3,6 @@ package diploma.edu.zp.guide_my_own.camera2;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import diploma.edu.zp.guide_my_own.R;
+
+/*
+ * craeted by Vitalii
+ */
 
 public class PhotoCamera2 extends Fragment {
 

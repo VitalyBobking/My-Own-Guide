@@ -11,11 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-
-     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <uses-feature android:name="android.hardware.camera2.full" />
 
     <uses-permission android:name="diploma.edu.zp.guide_my_own.permission.MAPS_RECEIVE" />
 
@@ -48,23 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-       <!-- <provider android:authorities="com.facebook.app.FacebookContentProvider{1841994936099181}"
-            android:name="com.facebook.FacebookContentProvider"
-            android:exported="true"/>-->
-
-        <!--
-        <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
 
         <activity
             android:name=".activity.MainActivity"

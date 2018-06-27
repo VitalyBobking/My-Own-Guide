@@ -36,11 +36,11 @@
     <string name="ENABLE">ENABLE</string>
     <string name="Failed">Failed</string>
 
-    <string name="BackDropBottomSheetBehavior">diploma.edu.zp.guide_my_own.lib.BackdropBottomSheetBehavior</string>
-    <string name="BottomSheetBehaviorGoogleMapsLike">diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike</string>
-    <string name="ScrollAwareFABBehavior">diploma.edu.zp.guide_my_own.lib.ScrollAwareFABBehavior</string>
-    <string name="MergedAppBarLayoutBehavior">diploma.edu.zp.guide_my_own.lib.MergedAppBarLayoutBehavior</string>
-    <string name="ScrollingAppBarLayoutBehavior">diploma.edu.zp.guide_my_own.lib.ScrollingAppBarLayoutBehavior</string>
+    <string name="BackDropBottomSheetBehavior" translatable="false">diploma.edu.zp.guide_my_own.lib.BackdropBottomSheetBehavior</string>
+    <string name="BottomSheetBehaviorGoogleMapsLike" translatable="false">diploma.edu.zp.guide_my_own.lib.BottomSheetBehaviorGoogleMapsLike</string>
+    <string name="ScrollAwareFABBehavior" translatable="false">diploma.edu.zp.guide_my_own.lib.ScrollAwareFABBehavior</string>
+    <string name="MergedAppBarLayoutBehavior" translatable="false">diploma.edu.zp.guide_my_own.lib.MergedAppBarLayoutBehavior</string>
+    <string name="ScrollingAppBarLayoutBehavior" translatable="false">diploma.edu.zp.guide_my_own.lib.ScrollingAppBarLayoutBehavior</string>
     <string name="location_access_disabled">Location access disabled</string>
     <string name="open_settings">Open Settings</string>
     <string name="cancel">Cancel</string>
@@ -85,8 +85,8 @@
 
 
     <string name="facebook_app_id">1841994936099181</string>
-    <string name="fb_login_protocol_scheme">fb1841994936099181</string>
-    <string name="fabric_api_key">78773a9f8e6c8b7ff532eedabadf412e08f4d21b</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1841994936099181</string>
+    <string name="fabric_api_key" translatable="false">78773a9f8e6c8b7ff532eedabadf412e08f4d21b</string>
     <string name="place_name">Place name</string>
     <string name="please_register">Please register</string>
     <string name="editing_was_successful">editing was successful</string>
