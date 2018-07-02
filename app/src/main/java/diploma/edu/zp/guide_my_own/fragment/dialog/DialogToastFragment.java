@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.support.v4.app.Fragment;
 
 /**
- * Created by valera on 2/23/17.
+ * craeted by Vitalii
  */
 
 public class DialogToastFragment extends Fragment {

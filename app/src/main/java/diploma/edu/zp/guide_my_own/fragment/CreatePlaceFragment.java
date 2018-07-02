@@ -39,7 +39,7 @@ import diploma.edu.zp.guide_my_own.fragment.dialog.DialogToastFragment;
 import diploma.edu.zp.guide_my_own.model.Place;
 
 /**
- * Created by Val on 2/16/2017.
+ * craeted by Vitalii
  */
 
 public class CreatePlaceFragment extends DialogToastFragment implements View.OnClickListener {

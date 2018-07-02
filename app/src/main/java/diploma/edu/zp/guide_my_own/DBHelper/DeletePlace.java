@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by valera on 5/4/17.
+ * craeted by Vitalii
  */
 
 public class DeletePlace {

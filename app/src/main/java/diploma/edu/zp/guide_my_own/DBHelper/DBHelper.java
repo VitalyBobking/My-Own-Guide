@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 
 /**
- * Created by Val on 2/17/2017.
+ * craeted by Vitalii
  */
 
 public class DBHelper extends SQLiteOpenHelper {

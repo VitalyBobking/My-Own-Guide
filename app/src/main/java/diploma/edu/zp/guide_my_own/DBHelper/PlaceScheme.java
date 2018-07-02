@@ -1,7 +1,7 @@
 package diploma.edu.zp.guide_my_own.DBHelper;
 
 /**
- * Created by Val on 2/17/2017.
+ * craeted by Vitalii
  */
 
 public enum PlaceScheme {

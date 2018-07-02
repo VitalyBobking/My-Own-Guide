@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import diploma.edu.zp.guide_my_own.R;
 
-/*
+/**
  * craeted by Vitalii
  */
 

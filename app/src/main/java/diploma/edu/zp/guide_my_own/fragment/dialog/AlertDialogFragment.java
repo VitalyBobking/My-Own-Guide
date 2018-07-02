@@ -12,7 +12,7 @@ import android.util.Log;
 import diploma.edu.zp.guide_my_own.R;
 
 /**
- * Created by valera on 2/23/17.
+ * craeted by Vitalii
  */
 
 public class AlertDialogFragment extends DialogFragment {

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import diploma.edu.zp.guide_my_own.model.Place;
 
 /**
- * Created by Val on 2/27/2017.
+ * craeted by Vitalii
  */
 
 public class DBGetPlaceByID {

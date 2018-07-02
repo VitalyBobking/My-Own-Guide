@@ -33,7 +33,7 @@ import diploma.edu.zp.guide_my_own.utils.GetPlaces;
 import rx.Subscriber;
 
 /**
- * Created by Val on 2/24/2017.
+ * craeted by Vitalii
  */
 
 public class CountryFragment extends DialogToastFragment {
