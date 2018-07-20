@@ -163,9 +163,7 @@ public class CountryFragment extends DialogToastFragment {
                     } else {
                         showErrorDialog(getString(R.string.something_went_wrong));
                     }
-                }).setNegativeButton(android.R.string.no, (dialog, which) -> {
-                    dialog.dismiss();
-                });
+                }).setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss());
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();

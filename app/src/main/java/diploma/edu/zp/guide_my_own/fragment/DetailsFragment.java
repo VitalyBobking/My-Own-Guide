@@ -83,7 +83,8 @@ public class DetailsFragment extends Fragment {
 
     private CallbackManager callbackManager;
     private static final String EMAIL = "email";
-    public static final String USER_NAME = "user_posts";
+    private static final String USER_NAME = "user_posts";
+    private static final String PUBLISH_ACTIONS = "publish_actions";
     public LoginButton loginButton;
     public ElementsUpdated elementsUpdated;
 
@@ -157,7 +158,7 @@ public class DetailsFragment extends Fragment {
         mBottomSheetBehavior.setPeekHeight(0);
 
         loginButton.setFragment(this);
-        loginButton.setReadPermissions(Arrays.asList(EMAIL, USER_NAME));
+        loginButton.setReadPermissions(Arrays.asList(EMAIL, USER_NAME, PUBLISH_ACTIONS));
 
 
         if(savedInstanceState != null) {

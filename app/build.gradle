@@ -14,7 +14,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
-apply plugin: 'me.tatarka.retrolambda'
+
 
 android {
     compileSdkVersion 27
@@ -23,8 +23,8 @@ android {
         applicationId "diploma.edu.zp.guide_my_own"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 7
-        versionName "2.0.4"
+        versionCode 8
+        versionName "2.0.5"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

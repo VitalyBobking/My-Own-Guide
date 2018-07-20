@@ -63,5 +63,4 @@ public class Camera2Activity extends AppCompatActivity {
             finish();
         }
     }
-
 }
